@@ -51,6 +51,6 @@ If you come across a bug while using the dashboard, please report it by opening 
 Getting Help
 ------------
 
-If you have any questions or need help with the project, please don't hesitate to reach out. You can contact us by emailing [noman0786@hotmail.com].
+If you have any questions or need help with the project, please don't hesitate to reach out. You can contact us by emailing noman0786@hotmail.com.
 
 Thank you for your interest in contributing to the New Venture(s) Compass dashboard!
