@@ -1,7 +1,7 @@
-GlobalBiz Explore Contributing Guidelines
+New Venture(s) Compass Contributing Guidelines
 ====================================
 
-Thank you for considering contributing to the GlobalBiz Explore dashboard! We appreciate your interest and support.
+Thank you for considering contributing to the New Venture(s) Compass dashboard! We appreciate your interest and support.
 
 Project Vision
 --------------
@@ -53,4 +53,4 @@ Getting Help
 
 If you have any questions or need help with the project, please don't hesitate to reach out. You can contact us by emailing [noman0786@hotmail.com].
 
-Thank you for your interest in contributing to the GlobalBiz Explore dashboard!
+Thank you for your interest in contributing to the New Venture(s) Compass dashboard!
