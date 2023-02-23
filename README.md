@@ -3,7 +3,7 @@
 ## Project Vision
 providing entrepreneurs with the necessary information to make informed decisions about which country to start a business in, by presenting them with comprehensive data on both external and internal factors affecting business development.
 
-## Project description
+## Project Description
 - Description
 
 - Include sketches here
