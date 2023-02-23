@@ -23,8 +23,8 @@ Important Resources
 
 To get an idea of what kind of work is currently happening on the project, please refer to the following resources:
 
--   README: This is where you can find a brief overview of the project, its purpose, and how to get started.
--   Source Code: Getting familiar with the source code can be a helpful when wanting to make changes.
+-   [README](https://github.com/sahaavi/New-Venture-s-Compass/blob/main/README.md): This is where you can find a brief overview of the project, its purpose, and how to get started.
+-   [Source Code](https://github.com/sahaavi/New-Venture-s-Compass): Getting familiar with the source code can be a helpful when wanting to make changes.
 
 Communication Channels
 ----------------------
