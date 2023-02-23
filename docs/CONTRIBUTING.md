@@ -31,7 +31,9 @@ Communication Channels
 
 We use the following communication channels to discuss the project:
 
+
 -   [GitHub Issues](https://github.com/sahaavi/New-Venture-s-Compass): This is where we keep track of bugs, enhancements, and other issues related to the project.
+
 
 How to Submit Changes
 ---------------------
