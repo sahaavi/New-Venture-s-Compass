@@ -12,13 +12,13 @@ Final goal is that these provide information for user to be able to select the e
 
 ## Sketches 
 ### Home Page
-![Home](Sketch-Home.png)
+![Home](images/Sketch-Home.png)
 
 ### Resources Page
-![Resources](Sketch-Resources.png)
+![Resources](images/Sketch-Resources.png)
 
 ### Logistics Page
-![Logistics](Sketch-Logistics.png)
+![Logistics](images/Sketch-Logistics.png)
 
 ## Addional Documents 
 Please refer to the following documents for further information:
