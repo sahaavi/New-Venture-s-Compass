@@ -6,7 +6,10 @@ providing entrepreneurs with the necessary information to make informed decision
 ## Project Description
 - Description
 
-- Include sketches here
+- Sketches 
+![Home](Sketch-Home.png)
+![Resources](Sketch-Resources.png)
+![Logistics](Sketch-Logistics.png)
 
 ## Addional Documents 
 Please refer to the following documents for further information:
