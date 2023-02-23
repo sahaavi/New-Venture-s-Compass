@@ -16,22 +16,24 @@ We welcome contributors of all skill levels and backgrounds to our project. If y
 Code of Conduct
 ---------------
 
-We have a Code of Conduct in place to ensure that all contributors feel welcome and respected. Please take a moment to review it before making any contributions to the project.
+We have a [Code of Conduct](https://github.com/sahaavi/New-Venture-s-Compass/blob/main/docs/CODE_OF_CONDUCT.md) in place to ensure that all contributors feel welcome and respected. Please take a moment to review it before making any contributions to the project.
 
 Important Resources
 -------------------
 
 To get an idea of what kind of work is currently happening on the project, please refer to the following resources:
 
--   README: This is where you can find a brief overview of the project, its purpose, and how to get started.
--   Source Code: Getting familiar with the source code can be a helpful when wanting to make changes.
+-   [README](https://github.com/sahaavi/New-Venture-s-Compass/blob/main/README.md): This is where you can find a brief overview of the project, its purpose, and how to get started.
+-   [Source Code](https://github.com/sahaavi/New-Venture-s-Compass): Getting familiar with the source code can be a helpful when wanting to make changes.
 
 Communication Channels
 ----------------------
 
 We use the following communication channels to discuss the project:
 
--   [GitHub Issues](https://github.com/nom0786/Data-Viz): This is where we keep track of bugs, enhancements, and other issues related to the project.
+
+-   [GitHub Issues](https://github.com/sahaavi/New-Venture-s-Compass): This is where we keep track of bugs, enhancements, and other issues related to the project.
+
 
 How to Submit Changes
 ---------------------
