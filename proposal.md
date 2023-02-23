@@ -12,6 +12,11 @@ This is an era of global economy and good hearts who want to bridge the gap in d
 Our app is intended to help entrepreneurs select countries suitable for their needs and go more informed into these countries. Our app indirectly helps different countries as they can benefit from new opportunities. In these ways, our app reduces risk of failure for businesses and helps countries benefit from new opportunities.
 
 ## Expanded EDA and description of the data:
+Original dataset has 5852 rows with data from 2003-2019 (Column name: example: 2003 [YR2003] for year 2003) of 266 different countries (has both Country Name, Country Code) in the world. 22 different world development indicators (Column name: Series Name) as tracked by Worldbank are in scope. This means, there are a total of 22 rows for each country in the dataset.
+Due to non-availability of data, around 30 countries and years 2003-2013 are dropped and the resulting dataset is approximately 3000 records. There are a total of 9 columns in the dataset and are: Country Name, Country Code, Series Name, date column for each year from 2014 to 2019 (6 columns).
+We will be visualizing data for around 200 countries in the main dashboard. Data and records are retained in the dataset based on whether the two important indicators – 1. Time to start a business and 2. Cost to start a business are available. If any of the other parameters are not available, those will be reported in remainder of the graphs in “resources” and “logistics” tabs as not available.
+Worldbank is working on a new methodology and is currently planned to be available in April 2024. Dashboard will be revisited for enhancements after this is released.
+Using Country code, we will derive a new variable (“continent”) for use in the map representation.
 
 ## Research question(s) that are explored:
 
