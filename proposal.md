@@ -1,4 +1,4 @@
-# New Venture(s) Compass - Product Discovery
+# New Venture(s) Compass - Dashboard Proposal
 
 We discuss the motivation, purpose and perceived user experience and benefits of New Venture(s) Compass dashboard in this document.
 
