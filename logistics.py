@@ -54,6 +54,7 @@ app.layout = dbc.Container([
         dbc.Col([
             # tabs
             dbc.Tabs([
+                # Home Tab
                 dbc.Tab([
                     # filters portion
                     dbc.Row([
@@ -84,9 +85,11 @@ app.layout = dbc.Container([
                         )
                     ])
                 ], label='Home'),
+                # Resources Tab
                 dbc.Tab([
                     
                 ], label='Resources'),
+                # Logistics Tab
                 dbc.Tab([
                     
                 ], label='Logistics')
