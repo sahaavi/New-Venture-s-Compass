@@ -7,7 +7,7 @@ from dash.dependencies import Input, Output, State
 import altair as alt
 
 # loading the dataset
-bi = pd.read_csv("datasets/cleandata.csv")
+bi = pd.read_csv("datasets/melted.csv")
 
 app = dash.Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
 
@@ -35,7 +35,7 @@ app.layout = dbc.Container([
             # Cost to Start Slider
             html.Div([
                 html.Label(
-                    "Cost to Start ('%' of income per capita)"
+                    "Cost to Start (%' of income per capita)"
                 ),
                 dcc.RangeSlider(
                     id='home_cts',
@@ -46,7 +46,69 @@ app.layout = dbc.Container([
                         'placement':'bottom'
                     }
                 )
-            ])
+            ]),
+            html.Br(),
+            # Average Interest Rate Slider
+            html.Div([
+                html.Label(
+                'Average Interest Rate (%)'
+                ),
+                dcc.RangeSlider(
+                    id='resources_air',
+                    min=0,
+                    max=30,
+                    allowCross=False,
+                    tooltip={
+                        'placement':'bottom'
+                    }
+                )
+            ]),
+            html.Br(),
+            # Time to Export Slider
+            html.Div([
+                html.Label(
+                'Time to Export (hours)'
+                ),
+                dcc.RangeSlider(
+                    id='logistics_tte',
+                    min=0,
+                    max=200,
+                    allowCross=False,
+                    tooltip={
+                        'placement':'bottom'
+                    }
+                )
+            ]),
+            # Time to Import Slider
+            html.Div([
+                html.Label(
+                'Time to Import (hours)'
+                ),
+                dcc.RangeSlider(
+                    id='logistics_tti',
+                    min=0,
+                    max=200,
+                    allowCross=False,
+                    tooltip={
+                        'placement':'bottom'
+                    }
+                )
+            ]),
+            # Custom Clearance Slider
+            html.Div([
+                html.Label(
+                'Custom Clearance'
+                ),
+                dcc.Input(
+                    id='logistics_cc',
+                    placeholder="Value",
+                    type='number',
+                    inputMode='numeric',
+                    min=0,
+                    max=30,
+                    value=5
+                )
+            ]),
         ], 
         md=3,
         style={'border': '1px solid #d3d3d3', 'border-radius': '10px'}
@@ -64,7 +126,7 @@ app.layout = dbc.Container([
                     dcc.Dropdown(
                         id='countries',
                         placeholder='Select countries...',
-                        value='Canada',
+                        value=['Canada'],
                         options=[{
                             'label': country, 'value': country
                         } for country in bi['Country Name'].unique()],
@@ -76,11 +138,10 @@ app.layout = dbc.Container([
                     dcc.Dropdown(
                         id='years',
                         placeholder='Select years...',
-                        #years = [2014, 2015, 2016, 2017, 2018, 2019]
-                        value=2014,
+                        value=['2014'],
                         options=[{
                             'label': year, 'value': year
-                        } for year in bi.columns if year.isdigit()],
+                        } for year in bi['year'].unique()],
                         multi=True
                     )
                 )
@@ -102,8 +163,20 @@ app.layout = dbc.Container([
                     ]),
                     # Logistics Tab
                     dbc.Tab(label='Logistics', children=[
-                        
+                        dbc.Row([
+                            dbc.Col([
+                                html.H5("Average time to clear Exports through customs (days)"),
+                                html.Iframe(
+                                    id='cc_bar',
+                                    style={'border-width': '0', 'width': '100%', 'height': '400px'}
+                                )
+                            ]),
+                            dbc.Col([
+                                html.H5("Logistics Performance Index")
+                            ])
+                        ])
                     ])
+                    # end of logistics tab
                 ])
                 # end of tabs
             ])
@@ -114,10 +187,27 @@ app.layout = dbc.Container([
     # end of filters row
 ])
 
-# Set up callbacks/backend
-# @app.callback(
-#     Output()
-# )
+# callback for logistics cc_bar
+@app.callback(
+    Output(component_id="cc_bar", component_property="srcDoc"),
+    Input(component_id="countries", component_property="value"),
+    Input(component_id="years", component_property="value"),
+    Input(component_id="logistics_cc", component_property="value")
+)
+
+def plot_cc_bar(countries, years, logistics_cc):
+
+    countries_years_series_filtered = bi[(bi['Country Name'].isin(countries)) & 
+                                                (bi['year'].isin(years)) & 
+                                                (bi['Series Name']=="Average time to clear exports through customs (days)") & 
+                                                (bi['value']<logistics_cc)]
+    chart = alt.Chart(countries_years_series_filtered).mark_bar().encode(
+        x=alt.X('Country Name'),
+        y=alt.Y('value', title='Days'),
+        color='Country Name',
+        column=alt.Column('year', title=None),
+        tooltip=['Country Name', 'year', 'value'])
+    return chart.to_html()
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(debug=False)
