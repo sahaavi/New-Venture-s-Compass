@@ -1,3 +1,4 @@
+import math
 import pandas as pd
 import dash
 from dash import html
@@ -5,9 +6,11 @@ from dash import dcc
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output, State
 import altair as alt
+import plotly.graph_objects as go
 
 # loading the dataset
 bi = pd.read_csv("datasets/melted.csv")
+bi['year'] = bi['year'].astype(str)
 
 app = dash.Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
 
@@ -172,7 +175,8 @@ app.layout = dbc.Container([
                                 )
                             ]),
                             dbc.Col([
-                                html.H5("Logistics Performance Index")
+                                html.H5("Logistics Performance Index"),
+                                dcc.Graph(id="lpi_radar", figure={})
                             ])
                         ])
                     ])
@@ -196,18 +200,51 @@ app.layout = dbc.Container([
 )
 
 def plot_cc_bar(countries, years, logistics_cc):
-
     countries_years_series_filtered = bi[(bi['Country Name'].isin(countries)) & 
                                                 (bi['year'].isin(years)) & 
                                                 (bi['Series Name']=="Average time to clear exports through customs (days)") & 
                                                 (bi['value']<logistics_cc)]
     chart = alt.Chart(countries_years_series_filtered).mark_bar().encode(
-        x=alt.X('Country Name'),
+        x=alt.X('Country Name', title=None),
         y=alt.Y('value', title='Days'),
         color='Country Name',
         column=alt.Column('year', title=None),
         tooltip=['Country Name', 'year', 'value'])
     return chart.to_html()
 
+# callback for logistics lpi_radar
+@app.callback(
+    Output(component_id="lpi_radar", component_property="figure"),
+    Input(component_id="countries", component_property="value"),
+    Input(component_id="years", component_property="value"),
+)
+
+def plot_lpi_radar(countries, years):
+    max = math.ceil(bi[bi["Series Name"]=="Logistics performance index: Overall (1=low to 5=high)"]["value"].max())
+    min = math.floor(bi[bi["Series Name"]=="Logistics performance index: Overall (1=low to 5=high)"]["value"].min())
+
+    fig = go.Figure()
+
+    for i in countries:
+        fig.add_trace(go.Scatterpolar(
+        r=bi[(bi["Series Name"]=="Logistics performance index: Overall (1=low to 5=high)") &
+        (bi["Country Name"]==i) &
+        (bi["year"].isin(years))]["value"].values.tolist(),
+        theta=years,
+        fill='toself',
+        name=i,
+        connectgaps=True
+    ))
+    # each circle values
+    fig.update_layout(
+    polar=dict(
+        radialaxis=dict(
+        visible=True,
+        range=[min, max]
+        )),
+    showlegend=False
+    )
+    return fig
+
 if __name__ == '__main__':
-    app.run_server(debug=False)
+    app.run_server(debug=True)
