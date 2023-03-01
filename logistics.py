@@ -123,7 +123,7 @@ app.layout = dbc.Container([
             html.Hr(),
             # top filters row
             dbc.Row([
-                # top filters portion
+                # top filters country's coloumn
                 dbc.Col(
                     # dropdown for country
                     dcc.Dropdown(
@@ -136,6 +136,7 @@ app.layout = dbc.Container([
                         multi=True
                     )
                 ),
+                # top filters year's coloumn
                 dbc.Col(
                     # dropdown for years
                     dcc.Dropdown(
@@ -148,7 +149,7 @@ app.layout = dbc.Container([
                         multi=True
                     )
                 )
-                # end of top filters portion
+                # end of top filters year's coloumn
             ]),
             # end of top filters row
             html.Br(),
@@ -166,7 +167,9 @@ app.layout = dbc.Container([
                     ]),
                     # Logistics Tab
                     dbc.Tab(label='Logistics', children=[
+                        # 1st row for bar and radar chart
                         dbc.Row([
+                            # multi-bar chart
                             dbc.Col([
                                 html.H5("Average time to clear Exports through customs (days)"),
                                 html.Iframe(
@@ -174,10 +177,20 @@ app.layout = dbc.Container([
                                     style={'border-width': '0', 'width': '100%', 'height': '400px'}
                                 )
                             ]),
+                            # radar chart
                             dbc.Col([
                                 html.H5("Logistics Performance Index"),
                                 dcc.Graph(id="lpi_radar", figure={})
                             ])
+                        ]),
+                        # end of 1st row for bar and radar chart
+                        # 2nd row for horizontal dot plot
+                        dbc.Row([
+                            html.H5("Time to Export (hours)"),
+                        ]),
+                        # 3rd row for horizontal dot plot
+                        dbc.Row([
+                            html.H5("Time to Import (hours)"),
                         ])
                     ])
                     # end of logistics tab
@@ -224,7 +237,7 @@ def plot_lpi_radar(countries, years):
     min = math.floor(bi[bi["Series Name"]=="Logistics performance index: Overall (1=low to 5=high)"]["value"].min())
 
     fig = go.Figure()
-
+    # tracing layout
     for i in countries:
         fig.add_trace(go.Scatterpolar(
         r=bi[(bi["Series Name"]=="Logistics performance index: Overall (1=low to 5=high)") &
