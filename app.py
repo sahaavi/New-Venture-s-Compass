@@ -13,6 +13,7 @@ bi = pd.read_csv("datasets/melted_data.csv")
 bi['year'] = bi['year'].astype(str)
 
 app = dash.Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
+server = app.server
 
 app.layout = dbc.Container([
     # filters row
@@ -328,4 +329,4 @@ def plot_tte_sb(countries, years, hours, state_value):
         return chart.to_html()
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(debug=False)
