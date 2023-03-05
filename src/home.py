@@ -5,11 +5,13 @@ from dash import dcc
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output, State
 import altair as alt
+from vega_datasets import data
 
 
 # loading the dataset
-bi = pd.read_csv("datasets/melted_data.csv")
-latlon = pd.read_csv("datasets/world_country_and_usa_states_latitude_and_longitude_values.csv")
+bi = pd.read_csv("../data/processed/melted_data.csv")
+latlon = pd.read_csv("../data/raw/world_country_and_usa_states_latitude_and_longitude_values.csv")
+bi['year'] = bi['year'].astype(date)
 
 app = dash.Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
 
@@ -197,16 +199,17 @@ def plot_map(countries, years, home_cts):
     #latlong data
     # Data source - https://www.kaggle.com/datasets/paultimothymooney/latitude-and-longitude-for-every-country-and-state
     #which is based on https://developers.google.com/public-data/docs/canonical/countries_csv
-
+    print("Iam here")
     arr=home_cts
+    print(home_cts,years,countries)
     #data input for selected countries
-
     countries_years_series_filtered = bi[(bi['Country Name'].isin(countries)) & 
                                                 (bi['year'].isin(years)) & 
                                                 (bi['Series Name']=="Cost of business start-up procedures (% of GNI per capita)") &
                                                 (bi['value']<arr[1])]
+    print("isithere")
     mergedf=pd.merge(countries_years_series_filtered, latlon, how='left',left_on='Country Name',right_on='country')
-
+    print("Iamhereagain")
     states = alt.topo_feature(data.us_10m.url, feature='states')
     countries = alt.topo_feature(data.world_110m.url, 'countries')
 
@@ -215,7 +218,7 @@ def plot_map(countries, years, home_cts):
         stroke='white'
     ).project(
         "equirectangular"
-    ).properties(
+    ).properties(   
         width=500,
         height=300
     )

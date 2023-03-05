@@ -9,7 +9,7 @@ import altair as alt
 import plotly.graph_objects as go
 
 # loading the dataset
-bi = pd.read_csv("datasets/melted_data.csv")
+bi = pd.read_csv("../data/processed/melted_data.csv")
 bi['year'] = bi['year'].astype(str)
 
 app = dash.Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
