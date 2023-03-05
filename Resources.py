@@ -160,11 +160,11 @@ app.layout = dbc.Container([
                     # Resources Tab
                     dbc.Tab(label='Resources', children=[
                         dbc.Row([
-                            html.H5("Financial Consideration")
+                            html.H4("Financial Consideration")
                         ]),
                         dbc.Row([
                             dbc.Col([
-                                html.H5("LINE CHART"),
+                                html.H6("Tracking Interest Rate Spread: Lending Rate Minus Deposit Rate (%)"),
                                 html.Iframe(
                                     id='int_line',
                                     style={'border-width': '0', 'width': '100%', 'height': '400px'}
@@ -172,24 +172,24 @@ app.layout = dbc.Container([
                             ])   
                         ]),
                         dbc.Row([
-                            html.H5("Non-Financial Consideration")
+                            html.H4("Non-Financial Consideration")
                         ]),
                         dbc.Row([
                             dbc.Col([
-                                html.H5("BAR CHART 1"),
+                                html.H6("Unemployment Rates between Labor Force with Basic, Intermediate, and Advanced Education"),
                                 html.Iframe(
                                     id='ur_bar',
-                                    style={'border-width': '0', 'width': '100%', 'height': '400px'}
+                                    style={'border-width': '0', 'width': '100%', 'height': '500px'}
                                 )
                             ]),
                             dbc.Col([
-                                html.H5("BAR CHART 2"),
+                                html.H6("National Estimate of Total Labour Force Participation Rate for Ages 15-24"),
                                 html.Iframe(
                                     id='pr_bar',
-                                    style={'border-width': '0', 'width': '100%', 'height': '400px'}
+                                    style={'border-width': '0', 'width': '100%', 'height': '500px'}
                                 )
                             ])
-                        ]) 
+                        ],className="g-0") 
                     ]),
                     # Logistics Tab
                     dbc.Tab(label='Logistics', children=[
@@ -223,9 +223,9 @@ def plot_int_line(countries, years):
     df = bi[(bi['Country Name'].isin(countries)) & (bi['Series Name']=='Unemployment with advanced education (% of total labor force with advanced education)') & (bi['year'].isin(years))]
     df['year'] = pd.to_datetime(df['year'], format='%Y')
 
-    chart = alt.Chart(df).mark_line().encode(
-        x=alt.X('year:T'),
-        y=alt.Y('value:Q', title='Interest Rate Spread (%)'),
+    chart1 = alt.Chart(df).mark_line().encode(
+        x=alt.X('year:T' ),
+        y=alt.Y('value:Q', title="Interest Rate Spread"),
         color='Country Name',
         tooltip=['Country Name', 'year', 'value']).properties( 
             height = 200,
@@ -237,9 +237,9 @@ def plot_int_line(countries, years):
         color='Country Name',
         tooltip=['Country Name', 'year', 'value'])
 
-    chart3 = chart + chart2
+    chart_final = chart1 + chart2
     
-    return chart3.to_html()
+    return chart_final.to_html()
 
 
 # callback for resources ur_bar
@@ -248,7 +248,6 @@ def plot_int_line(countries, years):
     Input(component_id="countries", component_property="value"),
     Input(component_id="years", component_property="value"),
 )
-
 def plot_ur_bar(countries, years):
     series = ['Unemployment with advanced education (% of total labor force with advanced education)', 
           'Unemployment with basic education (% of total labor force with basic education)', 
@@ -259,8 +258,8 @@ def plot_ur_bar(countries, years):
     df['year'] = pd.to_datetime(df['year'], format='%Y')
     
     chart = alt.Chart(df).mark_bar().encode(
-        x=alt.X('Country Name:N'),
-        y=alt.Y('value:Q', title='% of Total Labor Force'),
+        x=alt.X('Country Name:N', title="Country"),
+        y=alt.Y('value:Q', title="Unemployment Rate"),
         color='education_level',
         tooltip=['Country Name', 'year', 'value']).properties(  
         height = 400,
@@ -278,25 +277,23 @@ def plot_ur_bar(countries, years):
     Input(component_id="years", component_property="value"),
 )
 
-def plot_ppr_bar(countries, years):
-    series = ['Unemployment with advanced education (% of total labor force with advanced education)', 
-          'Unemployment with basic education (% of total labor force with basic education)', 
-          'Unemployment with intermediate education (% of total labor force with intermediate education)']
+def plot_pr_bar(countries, years):
 
-    bi['education_level'] = bi['Series Name'].str.extract('Unemployment with (\w+) education')
-    df = bi[(bi['Country Name'].isin(countries)) & (bi['Series Name'].isin(series)) & (bi['year'].isin(years))]
+    series_name = 'Labor force participation rate for ages 15-24, total (%) (national estimate)'
+    df = bi[(bi['Country Name'].isin(countries)) & (bi['Series Name'] == series_name) & (bi['year'].isin(years))]
     df['year'] = pd.to_datetime(df['year'], format='%Y')
+
+    df.head()
     
     chart = alt.Chart(df).mark_bar().encode(
-        x=alt.X('Country Name:N'),
-        y=alt.Y('value:Q', title='% of Total Labor Force'),
-        color='education_level',
+        x=alt.X('value:Q', title="Participation Rate"),
+        y=alt.Y('Country Name:N', title="Country"),
+        color='Country Name',
         tooltip=['Country Name', 'year', 'value']).properties(  
-        height = 400,
+        height = 300,
         width = 300
     ) 
     
-    #add new column with just adnvanced education, basic etc...
     return chart.to_html()
 
 
