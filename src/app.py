@@ -15,6 +15,7 @@ latlon = pd.read_csv("../data/raw/world_country_and_usa_states_latitude_and_long
 bi['year'] = bi['year'].astype(str)
 
 app = dash.Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
+server = app.server
 
 app.layout = dbc.Container([
     #app header
