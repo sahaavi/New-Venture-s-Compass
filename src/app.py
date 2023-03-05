@@ -6,6 +6,8 @@ import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output, State
 import altair as alt
 from vega_datasets import data
+import plotly.graph_objects as go
+import math
 
 # loading the dataset
 bi = pd.read_csv("C:/Users/vijip/DATA/DATA551/New-Venture-s-Compass/data/processed/melted_data.csv")
@@ -221,7 +223,9 @@ app.layout = dbc.Container([
                     # Resources Tab
                     dbc.Tab(label='Resources', children=[
                         dbc.Row([
-                            html.H4("Financial Consideration")
+                            html.H5("Financial Consideration"),
+                            html.P("As the next step, we think about knowledge of different resources available or necessary for the business and their supply and demand. \
+                                    First is the finance or credit related information.")
                         ]),
                         dbc.Row([
                             dbc.Col([
@@ -233,7 +237,8 @@ app.layout = dbc.Container([
                             ])   
                         ]),
                         dbc.Row([
-                            html.H4("Non-Financial Consideration")
+                            html.H5("Non-Financial Consideration"),
+                            html.P("Other type of resources available or necessary for the business is labor related. Information regarding them is provided below.")
                         ]),
                         dbc.Row([
                             dbc.Col([
@@ -254,6 +259,44 @@ app.layout = dbc.Container([
                     ]),
                     # Logistics Tab
                     dbc.Tab(label='Logistics', children=[
+                        dbc.Row([
+                            html.H5("Imports and Exports"),
+                            html.P("Logistics of how easy and quick it is to import and export and clear customs? Information regarding them is provided below \
+                                    which marks the final items to consider.")
+                        ]),
+                        # 1st row for bar and radar chart
+                        dbc.Row([
+                            # multi-bar chart
+                            dbc.Col([
+                                html.H5("Average time to clear Exports through customs (days)"),
+                                html.Iframe(
+                                    id='cc_bar',
+                                    style={'border-width': '0', 'width': '100%', 'height': '500px'}
+                                )
+                            ]),
+                            # radar chart
+                            dbc.Col([
+                                html.H5("Logistics Performance Index"),
+                                dcc.Graph(id="lpi_radar", figure={})
+                            ])
+                        ]),
+                        # end of 1st row for bar and radar chart
+                        # 2nd row for horizontal stacked bar
+                        dbc.Row([
+                            html.H5("Time to Export (hours)"),
+                            html.Iframe(
+                                    id='tte_sb',
+                                    style={'border-width': '0', 'width': '100%', 'height': '400px'}
+                                )
+                        ]),
+                        # 3rd row for horizontal stacked bar
+                        dbc.Row([
+                            html.H5("Time to Import (hours)"),
+                            html.Iframe(
+                                    id='tti_sb',
+                                    style={'border-width': '0', 'width': '100%', 'height': '200px'}
+                                )
+                        ])
                     ])
                     # end of logistics tab                               
                 ])
@@ -540,6 +583,147 @@ def plot_pr_bar(countries, years):
     return chart.to_html()
 ## Resource tab callback end
 
+## Logistics tab callback start
+@app.callback(
+    Output(component_id="cc_bar", component_property="srcDoc"),
+    Input(component_id="countries", component_property="value"),
+    Input(component_id="years", component_property="value"),
+    Input(component_id="logistics_cc", component_property="value")
+)
+
+def plot_cc_bar(countries, years, logistics_cc):
+    if countries == None:
+    #default/first view - All countries and years
+        #print("selected/default countries")
+        countries_years_series_filtered = bi[(bi['Series Name']=="Average time to clear exports through customs (days)") & (bi['value']<logistics_cc)]
+        #df_ctrl2 = bi[(bi['Series Name']=='Time required to start a business (days)') & (bi['value']<arr2[1]) & (bi['value']>arr2[0])]
+        #df_hme = pd.merge(df_ctrl1, df_ctrl2)
+        countries_years_series_filtered = countries_years_series_filtered.iloc[0:10]
+        #print("newdf2")
+        #print(df_hme)
+        #countries = df_hme['Country Name'].tolist()
+        print("default end")
+    else: 
+    #data input for selected countries
+        #print("selected/default countries",countries,years)
+        if years == None:
+            countries_years_series_filtered = bi[(bi['Country Name'].isin(countries)) & (bi['Series Name']=="Average time to clear exports through customs (days)") & (bi['value']<logistics_cc)]
+        else:
+            countries_years_series_filtered = bi[(bi['Country Name'].isin(countries)) & (bi['year'].isin(years)) & (bi['Series Name']=="Average time to clear exports through customs (days)") & (bi['value']<logistics_cc)]
+
+    #countries_years_series_filtered = bi[(bi['Country Name'].isin(countries)) & (bi['year'].isin(years)) & (bi['Series Name']=="Average time to clear exports through customs (days)") & (bi['value']<logistics_cc)]
+    chart = alt.Chart(countries_years_series_filtered).mark_bar().encode(
+        x=alt.X('Country Name', title=None),
+        y=alt.Y('value', title='Days'),
+        color='Country Name',
+        column=alt.Column('year', title=None),
+        tooltip=['Country Name', 'year', 'value'])
+    return chart.to_html()
+
+# callback for logistics lpi_radar
+@app.callback(
+    Output(component_id="lpi_radar", component_property="figure"),
+    Input(component_id="countries", component_property="value"),
+    Input(component_id="years", component_property="value"),
+)
+
+def plot_lpi_radar(countries, years):
+    max = math.ceil(bi[bi["Series Name"]=="Logistics performance index: Overall (1=low to 5=high)"]["value"].max())
+    min = math.floor(bi[bi["Series Name"]=="Logistics performance index: Overall (1=low to 5=high)"]["value"].min())
+    if countries == None:
+        countries = ['Afghanistan','Albania','Algeria','Angola','Antigua and Barbuda','Argentina','Armenia','Australia','Austria','Azerbaijan']
+    if years == None:
+        years=['2014']
+    fig = go.Figure()
+    # tracing layout
+    for i in countries:
+        fig.add_trace(go.Scatterpolar(
+        r=bi[(bi["Series Name"]=="Logistics performance index: Overall (1=low to 5=high)") &
+        (bi["Country Name"]==i) &
+        (bi["year"].isin(years))]["value"].values.tolist(),
+        theta=years,
+        fill='toself',
+        name=i,
+        connectgaps=True
+    ))
+    # each circle values
+    fig.update_layout(
+    polar=dict(
+        radialaxis=dict(
+        visible=True,
+        range=[min, max]
+        )),
+    showlegend=False
+    )
+    return fig
+
+# callback for logistics tte_sb
+@app.callback(
+    Output(component_id="tte_sb", component_property="srcDoc"),
+    [Input(component_id="countries", component_property="value"),
+    Input(component_id="years", component_property="value"),
+    Input(component_id="logistics_tte", component_property="value")],
+    State('logistics_tte', 'value')
+)
+
+def plot_tte_sb(countries, years, hours, state_value):
+    if countries == None:
+        countries = ['Afghanistan','Albania','Algeria','Angola','Antigua and Barbuda','Argentina','Armenia','Australia','Austria','Azerbaijan']
+    if years == None:
+        years=['2014']
+    if hours == None:
+        hours=[0,50]
+    if state_value is None:
+        return 'Rangeslider not initialized yet'
+    else:
+        filtered_export = bi[(bi['Country Name'].isin(countries)) & 
+                        (bi['year'].isin(years)) & 
+                        ((bi['Series Name'] == 'Time to export, border compliance (hours)') |
+                        (bi['Series Name'] == 'Time to export, documentary compliance (hours)')) & 
+                        (bi['value'] >= hours[0]) & 
+                        (bi['value'] <= hours[1])]
+        chart = alt.Chart(filtered_export).mark_bar(orient='horizontal').encode(
+            y=alt.Y('year', title=None),
+            x=alt.X('value', title='Days'),
+            color='Country Name',
+            row=alt.Row('Series Name', title=None, header=alt.Header(labelAngle=0)),
+            tooltip=['Country Name', 'year', 'value'],
+        )
+        return chart.to_html()
+    
+# callback for logistics tti_sb
+@app.callback(
+    Output(component_id="tti_sb", component_property="srcDoc"),
+    [Input(component_id="countries", component_property="value"),
+    Input(component_id="years", component_property="value"),
+    Input(component_id="logistics_tti", component_property="value")],
+    State('logistics_tte', 'value')
+)
+
+def plot_tte_sb(countries, years, hours, state_value):
+    if countries == None:
+        countries = ['Afghanistan','Albania','Algeria','Angola','Antigua and Barbuda','Argentina','Armenia','Australia','Austria','Azerbaijan']
+    if years == None:
+        years=['2014']
+    if hours == None:
+        hours=[0,50]
+    if state_value is None:
+        return 'Rangeslider not initialized yet'
+    else:
+        filtered_export = bi[(bi['Country Name'].isin(countries)) & 
+                        (bi['year'].isin(years)) & 
+                        ((bi['Series Name'] == 'Time to import, border compliance (hours)') |
+                        (bi['Series Name'] == 'Time to import, documentary compliance (hours)')) & 
+                        (bi['value'] >= hours[0]) & 
+                        (bi['value'] <= hours[1])]
+        chart = alt.Chart(filtered_export).mark_bar(orient='horizontal').encode(
+            y=alt.Y('year', title=None),
+            x=alt.X('value', title='Days'),
+            color='Country Name',
+            row=alt.Row('Series Name', title=None, header=alt.Header(labelAngle=0)),
+            tooltip=['Country Name', 'year', 'value'],
+        )
+        return chart.to_html()
 
 if __name__ == '__main__':
     app.run_server(debug=True)
