@@ -9,7 +9,7 @@ import altair as alt
 import plotly.graph_objects as go
 
 # loading the dataset
-bi = pd.read_csv("datasets/melted_data.csv")
+bi = pd.read_csv("../data/processed/melted_data.csv")
 bi['year'] = bi['year'].astype(str)
 
 app = dash.Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
@@ -225,6 +225,7 @@ app.layout = dbc.Container([
 )
 
 def plot_cc_bar(countries, years, logistics_cc):
+    print('year',years)
     countries_years_series_filtered = bi[(bi['Country Name'].isin(countries)) & 
                                                 (bi['year'].isin(years)) & 
                                                 (bi['Series Name']=="Average time to clear exports through customs (days)") & 

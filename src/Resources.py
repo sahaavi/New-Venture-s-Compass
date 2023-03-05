@@ -7,7 +7,7 @@ from dash.dependencies import Input, Output, State
 import altair as alt
 
 # loading the dataset
-bi = pd.read_csv("datasets/melted_data.csv")
+bi = pd.read_csv("../data/processed/melted_data.csv")
 
 app = dash.Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
 
