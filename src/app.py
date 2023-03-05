@@ -727,4 +727,4 @@ def plot_tte_sb(countries, years, hours, state_value):
         return chart.to_html()
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(debug=False)
