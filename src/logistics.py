@@ -225,7 +225,6 @@ app.layout = dbc.Container([
 )
 
 def plot_cc_bar(countries, years, logistics_cc):
-    print('year',years)
     countries_years_series_filtered = bi[(bi['Country Name'].isin(countries)) & 
                                                 (bi['year'].isin(years)) & 
                                                 (bi['Series Name']=="Average time to clear exports through customs (days)") & 

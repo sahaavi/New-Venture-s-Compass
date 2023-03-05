@@ -8,8 +8,8 @@ import altair as alt
 from vega_datasets import data
 
 # loading the dataset
-bi = pd.read_csv("C:/Users/vijip/DATA/DATA551/New-Venture-s-Compass/data/processed/melted_data.csv")
-latlon = pd.read_csv("C:/Users/vijip/DATA/DATA551/New-Venture-s-Compass/data/raw/world_country_and_usa_states_latitude_and_longitude_values.csv")
+bi = pd.read_csv("../data/processed/melted_data.csv")
+latlon = pd.read_csv("../data/raw/world_country_and_usa_states_latitude_and_longitude_values.csv")
 bi['year'] = bi['year'].astype(str)
 
 app = dash.Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
