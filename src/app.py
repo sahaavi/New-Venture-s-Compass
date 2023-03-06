@@ -327,7 +327,7 @@ def plot_map(countries, years, home_cts):
     #print(home_tts)
     arr=home_cts
     #arr2=home_tts
-    print("map",years)
+    #print("map",years)
     if countries == None:
     #default/first view - All countries and years
         #print("selected/default countries")
@@ -338,10 +338,10 @@ def plot_map(countries, years, home_cts):
         #print("newdf2")
         #print(df_hme)
         #countries = df_hme['Country Name'].tolist()
-        print("default end")
+        #print("default end")
     else: 
     #data input for selected countries
-        print("selected/default countries",countries,years)
+        #print("selected/default countries",countries,years)
         if years == None:
             df_hme = bi[(bi['Country Name'].isin(countries)) & (bi['Series Name']=='Cost of business start-up procedures (% of GNI per capita)') & (bi['value']<=arr[1])]
         else:
@@ -349,7 +349,7 @@ def plot_map(countries, years, home_cts):
         #df_ctrl2 = bi[(bi['Country Name'].isin(countries)) & (bi['Series Name']=='Time required to start a business (days)') & (bi['year'].isin(years)) & (bi['value']<arr2[1]) &  (bi['value']>arr2[0])]
         #df_hme=pd.merge(df_ctrl1, df_ctrl2)
     df_hme['year'] = pd.to_datetime(df_hme['year'], format='%Y')
-    print("pdmerge")
+    #print("pdmerge")
     mergedf=pd.merge(df_hme, latlon, how='left',left_on='Country Name',right_on='country')
     states_m = alt.topo_feature(data.us_10m.url, feature='states')
     countries = alt.topo_feature(data.world_110m.url, 'countries')
@@ -387,15 +387,15 @@ def plot_line(countries, years, home_cts):
     arr=home_cts
     if countries == None:
     #default/first view - All countries and years
-        print("selected/default countries")
+        #print("selected/default countries")
         df_hme = bi[(bi['Series Name']=='Cost of business start-up procedures (% of GNI per capita)') & (bi['value']<=arr[1])]
         df_hme = df_hme.iloc[0:10]
-        print("View fine",df_hme)
+        #print("View fine",df_hme)
         #countries = df_hme['Country Name'].tolist()
-        print("default end")
+        #print("default end")
     else: 
     #data input for selected countries
-        print("selected/default countries",years)
+        #print("selected/default countries",years)
         if years == None:
             df_hme = bi[(bi['Country Name'].isin(countries)) & (bi['Series Name']=='Cost of business start-up procedures (% of GNI per capita)') & (bi['value']<=arr[1])]
         else:
@@ -422,7 +422,7 @@ def plot_line(countries, years, home_cts):
     
     mergehmdf=pd.merge(df_hme, bi_2, how='left',on=['Country Name','year'])
     mergehmdf=mergehmdf[mergehmdf['Series Name_y']=='Time required to start a business (days)']
-    print("final",mergehmdf)
+    #print("final",mergehmdf)
     mergehmdf['year'] = pd.to_datetime(mergehmdf['year'], format='%Y')
     #mergehmdf=mergehmdf.reset_index()
     time_chart = (alt.Chart(mergehmdf).mark_line(point=True).encode(
@@ -459,19 +459,19 @@ def plot_int_line(countries, years):
 
     if countries == None:
     #default/first view - All countries and years
-        print("selected/default countries")
+        #print("selected/default countries")
 
         df = bi[(bi['Series Name']=='Unemployment with advanced education (% of total labor force with advanced education)')]
         df = df.iloc[0:10]
-        print(df)
+        #print(df)
         #countries = df_hme['Country Name'].tolist()
-        print("default end -t2")
+        #print("default end -t2")
     else: 
     #data input for selected countries
         if years == None:
             df = bi[(bi['Country Name'].isin(countries)) & (bi['Series Name']=='Unemployment with advanced education (% of total labor force with advanced education)')]
         else:
-            print("selected/default countries",years)
+            #print("selected/default countries",years)
             df = bi[(bi['Country Name'].isin(countries)) & (bi['Series Name']=='Unemployment with advanced education (% of total labor force with advanced education)') & (bi['year'].isin(years))]    
 
     #df = bi[(bi['Country Name'].isin(countries)) & (bi['Series Name']=='Unemployment with advanced education (% of total labor force with advanced education)') & (bi['year'].isin(years))]
@@ -514,18 +514,18 @@ def plot_ur_bar(countries, years):
     bi['education_level'] = bi['Series Name'].str.extract('Unemployment with (\w+) education')
     if countries == None:
     #default/first view - All countries and years
-        print("selected/default countries")
+        #print("selected/default countries")
         df = bi[(bi['Series Name'].isin(series))]
         df = df.iloc[0:10]
-        print(df)
+        #print(df)
         #countries = df_hme['Country Name'].tolist()
-        print("default end -t2")
+        #print("default end -t2")
     else:
         if years == None:
                 df = bi[(bi['Country Name'].isin(countries)) & (bi['Series Name'].isin(series))]
         else:
             #data input for selected countries
-            print("selected/default countries",years)
+            #print("selected/default countries",years)
             df = bi[(bi['Country Name'].isin(countries)) & (bi['Series Name'].isin(series)) & (bi['year'].isin(years))]
     #df = bi[(bi['Country Name'].isin(countries)) & (bi['Series Name'].isin(series)) & (bi['year'].isin(years))]
     df['year'] = pd.to_datetime(df['year'], format='%Y')
@@ -556,12 +556,12 @@ def plot_pr_bar(countries, years):
     series_name = 'Labor force participation rate for ages 15-24, total (%) (national estimate)'
     if countries == None:
     #default/first view - All countries and years
-        print("selected/default countries")
+        #print("selected/default countries")
         df = bi[(bi['Series Name'] == series_name)]
         df = df.iloc[0:10]
-        print(df)
+        #print(df)
         #countries = df_hme['Country Name'].tolist()
-        print("default end -t2")
+        #print("default end -t2")
     else: 
         if years == None:
             df = bi[(bi['Country Name'].isin(countries)) & (bi['Series Name'] == series_name)] 
@@ -603,7 +603,7 @@ def plot_cc_bar(countries, years, logistics_cc):
         #print("newdf2")
         #print(df_hme)
         #countries = df_hme['Country Name'].tolist()
-        print("default end")
+        #print("default end")
     else: 
     #data input for selected countries
         #print("selected/default countries",countries,years)
