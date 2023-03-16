@@ -46,6 +46,7 @@ def create_interest_rate_chart(df):
     )
     return chart
 
+
 def create_unemployment_rate_chart(df):
     """
     Create an Altair bar chart for unemployment rate by country, year, and education level.
@@ -56,8 +57,6 @@ def create_unemployment_rate_chart(df):
     Returns:
         alt.Chart: An Altair bar chart showing unemployment rate by country, year, and education level.
     """
-
-def create_unemployment_rate_chart(df):
     chart = alt.Chart(df).mark_bar().encode(
         x=alt.X('education_level:N', title=None, axis=alt.Axis(labels=False, ticks=False)),
         y=alt.Y('value:Q', title="Unemployment Rate", axis=alt.Axis(titleFontSize=14)),
@@ -72,7 +71,6 @@ def create_unemployment_rate_chart(df):
     )
 
     return chart
-
 
 
 def create_participation_rate_chart(df):
@@ -96,4 +94,3 @@ def create_participation_rate_chart(df):
     )
 
     return chart
-
