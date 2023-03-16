@@ -8,14 +8,11 @@ import altair as alt
 from vega_datasets import data
 import plotly.graph_objects as go
 import math
-from utils import resources_util as ru
 
 # loading the dataset
-bi = pd.read_csv("data/processed/melted_data.csv")
-latlon = pd.read_csv("data/raw/world_country_and_usa_states_latitude_and_longitude_values.csv")
+bi = pd.read_csv("../data/processed/melted_data.csv")
+latlon = pd.read_csv("../data/raw/world_country_and_usa_states_latitude_and_longitude_values.csv")
 bi['year'] = bi['year'].astype(str)
-
-selected_countries = None
 
 app = dash.Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
 server = app.server
@@ -77,12 +74,12 @@ app.layout = dbc.Container([
             # Average Interest Rate Slider
             html.Div([
                 html.Label(
-                'Average Interest Rate Spread (%)'
+                'Average Interest Rate (%)'
                 ),
                 dcc.RangeSlider(
                     id='resources_air',
                     min=0,
-                    max=15,
+                    max=30,
                     allowCross=False,
                     tooltip={
                         'placement':'bottom'
@@ -151,10 +148,10 @@ app.layout = dbc.Container([
             dbc.Row([
                 html.P('Hi there! Congratulations on thinking about starting a new business! \
                 This dashboard is an interactive guide that helps to understand different aspects that are important in starting a business.'),
-                html.P('In default mode, it shows data for 10 countries that are in World Bank database. \
+                html.P('In default mode, it shows data for 10 countries that are in World Bank datase. \
                 We recommend to start browsing through the tabs to get an idea of different aspects. \
                 Once finished, you can choose years and countries for your own assessment, Remember, both inputs are mandatory. \
-                Sliders are present on the side to further fine tune your selection for each tab. \
+                Sliders are present on the side to further fine tune your selection. \
                 ')
             ]),
             # top filters row
@@ -165,7 +162,7 @@ app.layout = dbc.Container([
                     dcc.Dropdown(
                         id='countries',
                         placeholder='Select countries...',
-                       value=['Canada', 'Argentina', 'Albania', 'Kenya', 'Thailand'],
+                       value=['Canada','United States','Mexico'],
                     #    value=['All'],
                         options=[{
                             'label': country, 'value': country
@@ -314,8 +311,8 @@ app.layout = dbc.Container([
 ])
 
 
-# --- HOME CALLBACK ---
-
+## callback for home tab start
+# callback for home line chart
 @app.callback(
     Output(component_id="hm_map", component_property="srcDoc"),
     Input(component_id="countries", component_property="value"),
@@ -324,23 +321,35 @@ app.layout = dbc.Container([
 )
 
 def plot_map(countries, years, home_cts):
-
+    #latlong data
+    # Data source - https://www.kaggle.com/datasets/paultimothymooney/latitude-and-longitude-for-every-country-and-state
+    #which is based on https://developers.google.com/public-data/docs/canonical/countries_csv
+    #print(home_tts)
     arr=home_cts
+    #arr2=home_tts
+    #print("map",years)
     if countries == None:
-
+    #default/first view - All countries and years
+        #print("selected/default countries")
         df_hme = bi[(bi['Series Name']=='Cost of business start-up procedures (% of GNI per capita)') & (bi['value']<=arr[1])]
-
+        #df_ctrl2 = bi[(bi['Series Name']=='Time required to start a business (days)') & (bi['value']<arr2[1]) & (bi['value']>arr2[0])]
+        #df_hme = pd.merge(df_ctrl1, df_ctrl2)
         df_hme = df_hme.iloc[0:10]
-
+        #print("newdf2")
+        #print(df_hme)
+        #countries = df_hme['Country Name'].tolist()
+        #print("default end")
     else: 
-
+    #data input for selected countries
+        #print("selected/default countries",countries,years)
         if years == None:
             df_hme = bi[(bi['Country Name'].isin(countries)) & (bi['Series Name']=='Cost of business start-up procedures (% of GNI per capita)') & (bi['value']<=arr[1])]
         else:
             df_hme = bi[(bi['Country Name'].isin(countries)) & (bi['Series Name']=='Cost of business start-up procedures (% of GNI per capita)') & (bi['year'].isin(years)) & (bi['value']<=arr[1])]
-
+        #df_ctrl2 = bi[(bi['Country Name'].isin(countries)) & (bi['Series Name']=='Time required to start a business (days)') & (bi['year'].isin(years)) & (bi['value']<arr2[1]) &  (bi['value']>arr2[0])]
+        #df_hme=pd.merge(df_ctrl1, df_ctrl2)
     df_hme['year'] = pd.to_datetime(df_hme['year'], format='%Y')
-
+    #print("pdmerge")
     mergedf=pd.merge(df_hme, latlon, how='left',left_on='Country Name',right_on='country')
     states_m = alt.topo_feature(data.us_10m.url, feature='states')
     countries = alt.topo_feature(data.world_110m.url, 'countries')
@@ -364,7 +373,7 @@ def plot_map(countries, years, home_cts):
     )
 
     chart=(background + points)
-
+#    tooltip=xcol).interactive()
     return chart.to_html()
 
 @app.callback(
@@ -377,12 +386,16 @@ def plot_map(countries, years, home_cts):
 def plot_line(countries, years, home_cts):
     arr=home_cts
     if countries == None:
-
+    #default/first view - All countries and years
+        #print("selected/default countries")
         df_hme = bi[(bi['Series Name']=='Cost of business start-up procedures (% of GNI per capita)') & (bi['value']<=arr[1])]
         df_hme = df_hme.iloc[0:10]
-
+        #print("View fine",df_hme)
+        #countries = df_hme['Country Name'].tolist()
+        #print("default end")
     else: 
-
+    #data input for selected countries
+        #print("selected/default countries",years)
         if years == None:
             df_hme = bi[(bi['Country Name'].isin(countries)) & (bi['Series Name']=='Cost of business start-up procedures (% of GNI per capita)') & (bi['value']<=arr[1])]
         else:
@@ -402,15 +415,20 @@ def plot_line(countries, years, home_cts):
         width=300,
         height=250)
         
+    #df_hme = bi[(bi['Country Name'].isin(countries)) & (bi['Series Name']=='Cost of business start-up procedures (% of GNI per capita)') & (bi['year'].isin(years)) & (bi['value']<arr[1])]
     bi_2 = bi
     bi_2['year'] = pd.to_datetime(bi_2['year'], format='%Y')
-
+    #mergehmdf=pd.concat([df_hme, bi],join='inner',keys=['Country Name','year'])
+    
     mergehmdf=pd.merge(df_hme, bi_2, how='left',on=['Country Name','year'])
     mergehmdf=mergehmdf[mergehmdf['Series Name_y']=='Time required to start a business (days)']
+    #print("final",mergehmdf)
     mergehmdf['year'] = pd.to_datetime(mergehmdf['year'], format='%Y')
+    #mergehmdf=mergehmdf.reset_index()
     time_chart = (alt.Chart(mergehmdf).mark_line(point=True).encode(
         alt.X('year:T',scale=alt.Scale(zero=False),title="Time to implement business"),
         alt.Y('value_y:Q',title="Time required to start a business (days)"),
+        #color=alt.Color("Country Name:N",sort="ascending",legend=alt.Legend(title="Selected Countries")),
         color='Country Name',
         opacity=alt.condition(click, alt.value(0.9), alt.value(0.2)),
         tooltip='value_y:Q').properties(
@@ -420,80 +438,128 @@ def plot_line(countries, years, home_cts):
     chart = (cost_chart | time_chart).add_selection(click)
         
     return chart.to_html()
+##home tab callback end
 
-# --- RESOURCES CALLBACK --- 
-
+##Resources tab callback start
 # callback for resources int_line
 @app.callback(
     Output(component_id="int_line", component_property="srcDoc"),
     Input(component_id="countries", component_property="value"),
-    Input(component_id="years", component_property="value"),
-    Input(component_id ="resources_air", component_property="value")
+    Input(component_id="years", component_property="value")
+    #Input(component_id="home_cts", component_property="value")
 )
+def plot_int_line(countries, years):
 
-def plot_int_line(countries, years, interest_rate):
+    if countries == None:
+        df = bi[(bi['Series Name']=='Unemployment with advanced education (% of total labor force with advanced education)')]
+    else: 
+        if years == None:
+            df = bi[(bi['Country Name'].isin(countries)) & (bi['Series Name']=='Unemployment with advanced education (% of total labor force with advanced education)')]
+        else:
+            df = bi[(bi['Country Name'].isin(countries)) & (bi['Series Name']=='Unemployment with advanced education (% of total labor force with advanced education)') & (bi['year'].isin(years))]    
 
-    series_name = 'Interest rate spread (lending rate minus deposit rate, %)'
-    df = bi[(bi['Country Name'].isin(countries)) & (bi['Series Name']==series_name) & (bi['year'].isin(years))] 
-    
-    if interest_rate != None:
-
-         selected_countries = ru.get_selected_countries(bi, countries, interest_rate)
-         df = df[df['Country Name'].isin(selected_countries)]
-    
     df['year'] = pd.to_datetime(df['year'], format='%Y')
-    chart = ru.create_interest_rate_chart(df)
 
-    return chart.to_html()
+    chart1 = alt.Chart(df).mark_line().encode(
+        x=alt.X('year:T' ),
+        y=alt.Y('value:Q', title="Interest Rate Spread"),
+        color='Country Name',
+        tooltip=['Country Name', 'year', 'value']).properties( 
+            height = 200,
+            width = 700)
+    
+    chart2 = alt.Chart(df).mark_circle().encode(
+        x=alt.X('year:T'),
+        y=alt.Y('value:Q'),
+        color='Country Name',
+        tooltip=['Country Name', 'year', 'value'])
+
+    chart_final = chart1 + chart2
+    
+    return chart_final.to_html()
+
 
 # callback for resources ur_bar
 @app.callback(
     Output(component_id="ur_bar", component_property="srcDoc"),
     Input(component_id="countries", component_property="value"),
     Input(component_id="years", component_property="value"),
-    Input(component_id="resources_air", component_property="value")
+    #Input(component_id="home_cts", component_property="value")
 )
-def plot_ur_bar(countries, years, interest_rate):
-
+def plot_ur_bar(countries, years):
+    #arr=home_cts
     series = ['Unemployment with advanced education (% of total labor force with advanced education)', 
-              'Unemployment with intermediate education (% of total labor force with intermediate education)',
-              'Unemployment with basic education (% of total labor force with basic education)']
+          'Unemployment with basic education (% of total labor force with basic education)', 
+          'Unemployment with intermediate education (% of total labor force with intermediate education)']
 
     bi['education_level'] = bi['Series Name'].str.extract('Unemployment with (\w+) education')
+    if countries == None:
+        df = bi[(bi['Series Name'].isin(series))]
+        df = df.iloc[0:10]
 
-    df = bi[(bi['Country Name'].isin(countries)) & (bi['Series Name'].isin(series)) & (bi['year'].isin(years))]
+    else:
+        if years == None:
+                df = bi[(bi['Country Name'].isin(countries)) & (bi['Series Name'].isin(series))]
+        else:
 
-    if interest_rate != None:
-        selected_countries = ru.get_selected_countries(bi, countries, interest_rate)
-        df = bi[(bi['Country Name'].isin(selected_countries)) & (bi['Series Name'].isin(series)) & (bi['year'].isin(years))]
+            df = bi[(bi['Country Name'].isin(countries)) & (bi['Series Name'].isin(series)) & (bi['year'].isin(years))]
+    df['year'] = pd.to_datetime(df['year'], format='%Y')
     
-    chart = ru.create_unemployment_rate_chart(df)
-
+    chart = alt.Chart(df).mark_bar().encode(
+        x=alt.X('Country Name:N', title="Country"),
+        y=alt.Y('value:Q', title="Unemployment Rate"),
+        color='education_level',
+        tooltip=['Country Name', 'year', 'value']).properties(  
+        height = 300,
+        width = 300
+    ) 
+    
+    #add new column with just adnvanced education, basic etc...
     return chart.to_html()
+
 
 # callback for resources pr_bar
 @app.callback(
     Output(component_id="pr_bar", component_property="srcDoc"),
     Input(component_id="countries", component_property="value"),
-    Input(component_id="years", component_property="value"),
-    Input(component_id="resources_air", component_property="value")
+    Input(component_id="years", component_property="value")
+    #Input(component_id="home_cts", component_property="value")
 )
 
-def plot_pr_bar(countries, years, interest_rate):
-
+def plot_pr_bar(countries, years):
+    #arr=home_cts
     series_name = 'Labor force participation rate for ages 15-24, total (%) (national estimate)'
-    df = bi[(bi['Country Name'].isin(countries)) & (bi['Series Name'] == series_name) & (bi['year'].isin(years))]
-
-    if interest_rate != None:
-        selected_countries = ru.get_selected_countries(bi, countries, interest_rate)
-        df = bi[(bi['Country Name'].isin(selected_countries)) & (bi['Series Name']==series_name) & (bi['year'].isin(years))]
+    if countries == None:
+    #default/first view - All countries and years
+        #print("selected/default countries")
+        df = bi[(bi['Series Name'] == series_name)]
+        df = df.iloc[0:10]
+        #print(df)
+        #countries = df_hme['Country Name'].tolist()
+        #print("default end -t2")
+    else: 
+        if years == None:
+            df = bi[(bi['Country Name'].isin(countries)) & (bi['Series Name'] == series_name)] 
+        else:
+            df = bi[(bi['Country Name'].isin(countries)) & (bi['Series Name'] == series_name) & (bi['year'].isin(years))]
     
-    chart = ru.create_participation_rate_chart(df)
+    df['year'] = pd.to_datetime(df['year'], format='%Y')
+
+    df.head()
+    
+    chart = alt.Chart(df).mark_bar().encode(
+        x=alt.X('value:Q', title="Participation Rate"),
+        y=alt.Y('Country Name:N', title="Country"),
+        color='Country Name',
+        tooltip=['Country Name', 'year', 'value']).properties(  
+        height = 300,
+        width = 300
+    ) 
     
     return chart.to_html()
+## Resource tab callback end
 
-
-# --- LOGISITICS CALLBACK ---
+## Logistics tab callback start
 @app.callback(
     Output(component_id="cc_bar", component_property="srcDoc"),
     Input(component_id="countries", component_property="value"),
@@ -503,18 +569,25 @@ def plot_pr_bar(countries, years, interest_rate):
 
 def plot_cc_bar(countries, years, logistics_cc):
     if countries == None:
-
+    #default/first view - All countries and years
+        #print("selected/default countries")
         countries_years_series_filtered = bi[(bi['Series Name']=="Average time to clear exports through customs (days)") & (bi['value']<logistics_cc)]
-
+        #df_ctrl2 = bi[(bi['Series Name']=='Time required to start a business (days)') & (bi['value']<arr2[1]) & (bi['value']>arr2[0])]
+        #df_hme = pd.merge(df_ctrl1, df_ctrl2)
         countries_years_series_filtered = countries_years_series_filtered.iloc[0:10]
-
+        #print("newdf2")
+        #print(df_hme)
+        #countries = df_hme['Country Name'].tolist()
+        #print("default end")
     else: 
-
+    #data input for selected countries
+        #print("selected/default countries",countries,years)
         if years == None:
             countries_years_series_filtered = bi[(bi['Country Name'].isin(countries)) & (bi['Series Name']=="Average time to clear exports through customs (days)") & (bi['value']<logistics_cc)]
         else:
             countries_years_series_filtered = bi[(bi['Country Name'].isin(countries)) & (bi['year'].isin(years)) & (bi['Series Name']=="Average time to clear exports through customs (days)") & (bi['value']<logistics_cc)]
 
+    #countries_years_series_filtered = bi[(bi['Country Name'].isin(countries)) & (bi['year'].isin(years)) & (bi['Series Name']=="Average time to clear exports through customs (days)") & (bi['value']<logistics_cc)]
     chart = alt.Chart(countries_years_series_filtered).mark_bar().encode(
         x=alt.X('Country Name', title=None),
         y=alt.Y('value', title='Days'),
@@ -560,64 +633,73 @@ def plot_lpi_radar(countries, years):
     )
     return fig
 
-# callback for logistics tte_sb & logistics tti_sb
+# callback for logistics tte_sb
 @app.callback(
     Output(component_id="tte_sb", component_property="srcDoc"),
     [Input(component_id="countries", component_property="value"),
     Input(component_id="years", component_property="value"),
-    Input(component_id="logistics_tte", component_property="value"),
-    Input(component_id="logistics_tti", component_property="value"),
-    State('logistics_tte', 'value'),
-    State('logistics_tti', 'value')]
-    
+    Input(component_id="logistics_tte", component_property="value")],
+    State('logistics_tte', 'value')
 )
 
-def plot_tte_sb(countries, years, tte_hours, tti_hours, tte_state_value, tti_state_value):
-    if tte_state_value is None:
-        return 'Rangeslider not initialized yet'
-    elif tti_state_value is None:
+def plot_tte_sb(countries, years, hours, state_value):
+    if countries == None:
+        countries = ['Afghanistan','Albania','Algeria','Angola','Antigua and Barbuda','Argentina','Armenia','Australia','Austria','Azerbaijan']
+    if years == None:
+        years=['2014']
+    if hours == None:
+        hours=[0,50]
+    if state_value is None:
         return 'Rangeslider not initialized yet'
     else:
-        click = alt.selection_multi(fields=['Country Name'], bind='legend')
-        
-        filtered_export_tte = bi[(bi['Country Name'].isin(countries)) & 
+        filtered_export = bi[(bi['Country Name'].isin(countries)) & 
                         (bi['year'].isin(years)) & 
                         ((bi['Series Name'] == 'Time to export, border compliance (hours)') |
                         (bi['Series Name'] == 'Time to export, documentary compliance (hours)')) & 
-                        (bi['value'] >= tte_hours[0]) & 
-                        (bi['value'] <= tte_hours[1])]
-        
-        tte_chart = alt.Chart(filtered_export_tte).mark_bar(orient='horizontal').encode(
+                        (bi['value'] >= hours[0]) & 
+                        (bi['value'] <= hours[1])]
+        chart = alt.Chart(filtered_export).mark_bar(orient='horizontal').encode(
             y=alt.Y('year', title=None),
-            x=alt.X('value', title=None),
+            x=alt.X('value', title='Days'),
             color='Country Name',
             row=alt.Row('Series Name', title=None, header=alt.Header(labelAngle=0)),
             tooltip=['Country Name', 'year', 'value'],
-            opacity=alt.condition(click, alt.value(0.9), alt.value(0.2))
-        ).properties( 
-                height = 100,
-                width = 300)
+        )
+        return chart.to_html()
+    
+# callback for logistics tti_sb
+@app.callback(
+    Output(component_id="tti_sb", component_property="srcDoc"),
+    [Input(component_id="countries", component_property="value"),
+    Input(component_id="years", component_property="value"),
+    Input(component_id="logistics_tti", component_property="value")],
+    State('logistics_tte', 'value')
+)
 
-        filtered_export_tti = bi[(bi['Country Name'].isin(countries)) & 
+def plot_tte_sb(countries, years, hours, state_value):
+    if countries == None:
+        countries = ['Afghanistan','Albania','Algeria','Angola','Antigua and Barbuda','Argentina','Armenia','Australia','Austria','Azerbaijan']
+    if years == None:
+        years=['2014']
+    if hours == None:
+        hours=[0,50]
+    if state_value is None:
+        return 'Rangeslider not initialized yet'
+    else:
+        filtered_export = bi[(bi['Country Name'].isin(countries)) & 
                         (bi['year'].isin(years)) & 
                         ((bi['Series Name'] == 'Time to import, border compliance (hours)') |
                         (bi['Series Name'] == 'Time to import, documentary compliance (hours)')) & 
-                        (bi['value'] >= tti_hours[0]) & 
-                        (bi['value'] <= tti_hours[1])]
-        
-        tti_chart = alt.Chart(filtered_export_tti).mark_bar(orient='horizontal').encode(
+                        (bi['value'] >= hours[0]) & 
+                        (bi['value'] <= hours[1])]
+        chart = alt.Chart(filtered_export).mark_bar(orient='horizontal').encode(
             y=alt.Y('year', title=None),
-            x=alt.X('value', title=None),
+            x=alt.X('value', title='Days'),
             color='Country Name',
             row=alt.Row('Series Name', title=None, header=alt.Header(labelAngle=0)),
             tooltip=['Country Name', 'year', 'value'],
-            opacity=alt.condition(click, alt.value(0.9), alt.value(0.2))
-        ).properties( 
-                height = 100,
-                width = 300)
-
-    chart = (tte_chart & tti_chart).add_selection(click)
-    return chart.to_html()
+        )
+        return chart.to_html()
 
 if __name__ == '__main__':
     app.run_server(debug=False)
