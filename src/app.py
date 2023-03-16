@@ -11,8 +11,8 @@ import math
 from utils import resources_util as ru
 
 # loading the dataset
-bi = pd.read_csv("data/processed/melted_data.csv")
-latlon = pd.read_csv("data/raw/world_country_and_usa_states_latitude_and_longitude_values.csv")
+bi = pd.read_csv("../data/processed/melted_data.csv")
+latlon = pd.read_csv("../data/raw/world_country_and_usa_states_latitude_and_longitude_values.csv")
 bi['year'] = bi['year'].astype(str)
 
 selected_countries = None
