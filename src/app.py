@@ -658,73 +658,64 @@ def plot_lpi_radar(countries, years):
     )
     return fig
 
-# callback for logistics tte_sb
+# callback for logistics tte_sb & logistics tti_sb
 @app.callback(
     Output(component_id="tte_sb", component_property="srcDoc"),
     [Input(component_id="countries", component_property="value"),
     Input(component_id="years", component_property="value"),
-    Input(component_id="logistics_tte", component_property="value")],
-    State('logistics_tte', 'value')
+    Input(component_id="logistics_tte", component_property="value"),
+    Input(component_id="logistics_tti", component_property="value"),
+    State('logistics_tte', 'value'),
+    State('logistics_tti', 'value')]
+    
 )
 
-def plot_tte_sb(countries, years, hours, state_value):
-    if countries == None:
-        countries = ['Afghanistan','Albania','Algeria','Angola','Antigua and Barbuda','Argentina','Armenia','Australia','Austria','Azerbaijan']
-    if years == None:
-        years=['2014']
-    if hours == None:
-        hours=[0,50]
-    if state_value is None:
+def plot_tte_sb(countries, years, tte_hours, tti_hours, tte_state_value, tti_state_value):
+    if tte_state_value is None:
+        return 'Rangeslider not initialized yet'
+    elif tti_state_value is None:
         return 'Rangeslider not initialized yet'
     else:
-        filtered_export = bi[(bi['Country Name'].isin(countries)) & 
+        click = alt.selection_multi(fields=['Country Name'], bind='legend')
+        
+        filtered_export_tte = bi[(bi['Country Name'].isin(countries)) & 
                         (bi['year'].isin(years)) & 
                         ((bi['Series Name'] == 'Time to export, border compliance (hours)') |
                         (bi['Series Name'] == 'Time to export, documentary compliance (hours)')) & 
-                        (bi['value'] >= hours[0]) & 
-                        (bi['value'] <= hours[1])]
-        chart = alt.Chart(filtered_export).mark_bar(orient='horizontal').encode(
+                        (bi['value'] >= tte_hours[0]) & 
+                        (bi['value'] <= tte_hours[1])]
+        
+        tte_chart = alt.Chart(filtered_export_tte).mark_bar(orient='horizontal').encode(
             y=alt.Y('year', title=None),
-            x=alt.X('value', title='Days'),
+            x=alt.X('value', title=None),
             color='Country Name',
             row=alt.Row('Series Name', title=None, header=alt.Header(labelAngle=0)),
             tooltip=['Country Name', 'year', 'value'],
-        )
-        return chart.to_html()
-    
-# callback for logistics tti_sb
-@app.callback(
-    Output(component_id="tti_sb", component_property="srcDoc"),
-    [Input(component_id="countries", component_property="value"),
-    Input(component_id="years", component_property="value"),
-    Input(component_id="logistics_tti", component_property="value")],
-    State('logistics_tte', 'value')
-)
+            opacity=alt.condition(click, alt.value(0.9), alt.value(0.2))
+        ).properties( 
+                height = 100,
+                width = 300)
 
-def plot_tte_sb(countries, years, hours, state_value):
-    if countries == None:
-        countries = ['Afghanistan','Albania','Algeria','Angola','Antigua and Barbuda','Argentina','Armenia','Australia','Austria','Azerbaijan']
-    if years == None:
-        years=['2014']
-    if hours == None:
-        hours=[0,50]
-    if state_value is None:
-        return 'Rangeslider not initialized yet'
-    else:
-        filtered_export = bi[(bi['Country Name'].isin(countries)) & 
+        filtered_export_tti = bi[(bi['Country Name'].isin(countries)) & 
                         (bi['year'].isin(years)) & 
                         ((bi['Series Name'] == 'Time to import, border compliance (hours)') |
                         (bi['Series Name'] == 'Time to import, documentary compliance (hours)')) & 
-                        (bi['value'] >= hours[0]) & 
-                        (bi['value'] <= hours[1])]
-        chart = alt.Chart(filtered_export).mark_bar(orient='horizontal').encode(
+                        (bi['value'] >= tti_hours[0]) & 
+                        (bi['value'] <= tti_hours[1])]
+        
+        tti_chart = alt.Chart(filtered_export_tti).mark_bar(orient='horizontal').encode(
             y=alt.Y('year', title=None),
-            x=alt.X('value', title='Days'),
+            x=alt.X('value', title=None),
             color='Country Name',
             row=alt.Row('Series Name', title=None, header=alt.Header(labelAngle=0)),
             tooltip=['Country Name', 'year', 'value'],
-        )
-        return chart.to_html()
+            opacity=alt.condition(click, alt.value(0.9), alt.value(0.2))
+        ).properties( 
+                height = 100,
+                width = 300)
+
+    chart = (tte_chart & tti_chart).add_selection(click)
+    return chart.to_html()
 
 if __name__ == '__main__':
     app.run_server(debug=False)
