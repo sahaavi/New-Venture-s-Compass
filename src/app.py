@@ -435,15 +435,13 @@ def plot_int_line(countries, years, interest_rate):
 
     series_name = 'Interest rate spread (lending rate minus deposit rate, %)'
     df = bi[(bi['Country Name'].isin(countries)) & (bi['Series Name']==series_name) & (bi['year'].isin(years))] 
+    df['year'] = pd.to_datetime(df['year'], format='%Y')
     
     if interest_rate != None:
-
          selected_countries = ru.get_selected_countries(bi, countries, interest_rate)
          df = df[df['Country Name'].isin(selected_countries)]
     
-    df['year'] = pd.to_datetime(df['year'], format='%Y')
     chart = ru.create_interest_rate_chart(df)
-
     return chart.to_html()
 
 # callback for resources ur_bar
@@ -465,10 +463,9 @@ def plot_ur_bar(countries, years, interest_rate):
 
     if interest_rate != None:
         selected_countries = ru.get_selected_countries(bi, countries, interest_rate)
-        df = bi[(bi['Country Name'].isin(selected_countries)) & (bi['Series Name'].isin(series)) & (bi['year'].isin(years))]
+        df = df[df['Country Name'].isin(selected_countries)]
     
     chart = ru.create_unemployment_rate_chart(df)
-
     return chart.to_html()
 
 # callback for resources pr_bar
@@ -480,18 +477,16 @@ def plot_ur_bar(countries, years, interest_rate):
 )
 
 def plot_pr_bar(countries, years, interest_rate):
-
+    
     series_name = 'Labor force participation rate for ages 15-24, total (%) (national estimate)'
     df = bi[(bi['Country Name'].isin(countries)) & (bi['Series Name'] == series_name) & (bi['year'].isin(years))]
 
     if interest_rate != None:
         selected_countries = ru.get_selected_countries(bi, countries, interest_rate)
-        df = bi[(bi['Country Name'].isin(selected_countries)) & (bi['Series Name']==series_name) & (bi['year'].isin(years))]
+        df = df[df['Country Name'].isin(selected_countries)]
     
     chart = ru.create_participation_rate_chart(df)
-    
     return chart.to_html()
-
 
 # --- LOGISITICS CALLBACK ---
 @app.callback(
