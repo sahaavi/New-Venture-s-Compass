@@ -1,28 +1,76 @@
 import altair as alt
-import pandas as pd
 
-def get_selected_countries(data, countries, interest_rate_range):
+def create_tts_cts_charts(df_cts, df_tts):
     """
-    Return a list of countries with mean interest rates within the specified range. These countries will also be used as chained
-    filter for remaining charts in resources tab.
+    Create side-by-side Altair charts based on the given dataframes.
 
-    Args:
-        data (pd.DataFrame): The input data frame containing country, series name, and interest rate information.
-        countries (list): A list of country names to consider for filtering.
-        interest_rate_range (tuple): A tuple with two values, representing the minimum and maximum interest rate.
+    Parameters:
+    df_cts (pd.DataFrame): Dataframe containing data for the Cost to implement business chart
+    df_tts (pd.DataFrame): Dataframe containing data for the Time to implement business chart
 
     Returns:
-        list: A list of countries with mean interest rates within the specified range.
+    alt.Chart: Combined Altair chart object
     """
-    min_rate = interest_rate_range[0]
-    max_rate = interest_rate_range[1]
-    series_name = 'Interest rate spread (lending rate minus deposit rate, %)'
-    df = data[(data['Country Name'].isin(countries)) & (data['Series Name'] == series_name)]
+    brush = alt.selection_interval()
+    click = alt.selection_multi(fields=['Country Name'], bind='legend')
 
-    mean_rates = df.groupby('Country Name')['value'].mean().reset_index()
-    selected_countries = mean_rates[(mean_rates['value'] >= min_rate) & (mean_rates['value'] <= max_rate)]['Country Name']
+    cost_chart = alt.Chart(df_cts).mark_line(point=True).encode(
+        alt.X('year:T', scale=alt.Scale(zero=False), title="Cost to implement business"),
+        alt.Y('value:Q', title="% of GNI per capita"),
+        tooltip=['Country Name', 'year', 'value'],
+        color=alt.condition(brush, 'Country Name', alt.value('lightgray')),
+        opacity=alt.condition(click, alt.value(0.9), alt.value(0.2))
+    ).add_selection(brush).properties(
+        width=300,
+        height=250
+    )
 
-    return selected_countries
+    time_chart = (alt.Chart(df_tts).mark_line(point=True).encode(
+        alt.X('year:T', scale=alt.Scale(zero=False), title="Time to implement business"),
+        alt.Y('value:Q', title="Time required to start a business (days)"),
+        color='Country Name',
+        opacity=alt.condition(click, alt.value(0.9), alt.value(0.2)),
+        tooltip=['Country Name', 'year', 'value']
+    ).properties(
+        width=300,
+        height=250
+    ))
+
+    chart = (cost_chart | time_chart).add_selection(click)
+    return chart
+
+
+def create_map_chart(countries, mergedf):
+    """
+    Create an Altair map chart with points based on the given dataframes.
+
+    Parameters:
+    countries (pd.DataFrame): Dataframe containing country geographic information
+    mergedf (pd.DataFrame): Dataframe containing data for the points on the map
+
+    Returns:
+    alt.Chart: Combined Altair chart object
+    """
+    background = alt.Chart(countries).mark_geoshape(
+        fill='palegreen',
+        stroke='white'
+    ).project(
+        "equirectangular"
+    ).properties(
+        width=800,
+        height=300
+    )
+
+    points = alt.Chart(mergedf).mark_circle().encode(
+        longitude='longitude:Q',
+        latitude='latitude:Q',
+        size=alt.value(40),
+        color='Country Name:N',
+        tooltip='Country Name'
+    )
+
+    chart = (background + points)
+    return chart
 
 
 def create_interest_rate_chart(df):
@@ -94,3 +142,4 @@ def create_participation_rate_chart(df):
     )
 
     return chart
+
