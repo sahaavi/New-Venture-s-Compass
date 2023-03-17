@@ -41,7 +41,7 @@ app.layout = dbc.Container([
             
             html.Div([
                 html.Label(
-                "Average Cost to Start (%' of income per capita)'"
+                "Average Cost to Start (% of income per capita)"
                 ),
                 dcc.RangeSlider(
                     id='home_cts',
