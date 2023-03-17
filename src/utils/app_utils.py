@@ -25,21 +25,21 @@ def get_selected_countries(data, countries, value_range, series_name):
     return selected_countries
 
 
-def get_countries_based_on_sliders(df, countries, sliders_series_list):
+def get_countries_based_on_sliders(df, countries, sliders_series):
     """
     Get selected countries based on different slider values.
 
     Parameters:
     df (pd.DataFrame): Original dataframe containing the data
     countries (list): List of countries to consider
-    sliders_series_list (list): List of tuples containing slider values and their corresponding series names
+    sliders_series (list): List of tuples containing slider values and their corresponding series names
 
     Returns:
     pd.Series: A pandas Series object containing the selected countries
     """
     selected_countries_list = []
     
-    for slider_value, series_name in sliders_series_list:
+    for slider_value, series_name in sliders_series:
         if slider_value is not None:
             selected_countries = get_selected_countries(df, countries, slider_value, series_name)
         else:
