@@ -15,29 +15,33 @@ def create_tts_cts_charts(df_cts, df_tts):
     click = alt.selection_multi(fields=['Country Name'], bind='legend')
 
     cost_chart = alt.Chart(df_cts).mark_line(point=True).encode(
-        alt.X('year:T', scale=alt.Scale(zero=False), title="Cost to implement business"),
+        alt.X('year:T', scale=alt.Scale(zero=False), title=None),
         alt.Y('value:Q', title="% of GNI per capita"),
         tooltip=['Country Name', 'year', 'value'],
         color=alt.condition(brush, 'Country Name', alt.value('lightgray')),
         opacity=alt.condition(click, alt.value(0.9), alt.value(0.2))
     ).add_selection(brush).properties(
         width=300,
-        height=250
+        height=250,
+        title={"text": "Cost to implement business", "fontSize": 14, "fontWeight": "bold", "anchor": "middle"}
     )
 
     time_chart = (alt.Chart(df_tts).mark_line(point=True).encode(
-        alt.X('year:T', scale=alt.Scale(zero=False), title="Time to implement business"),
+        alt.X('year:T', scale=alt.Scale(zero=False), title=None),
         alt.Y('value:Q', title="Time required to start a business (days)"),
-        color='Country Name',
+        color=alt.Color('Country Name', legend=alt.Legend(title=None)),
         opacity=alt.condition(click, alt.value(0.9), alt.value(0.2)),
         tooltip=['Country Name', 'year', 'value']
     ).properties(
         width=300,
-        height=250
+        height=250,
+        title={"text": "Time to implement business", "fontSize": 14, "fontWeight": "bold", "anchor": "middle"}
     ))
 
     chart = (cost_chart | time_chart).add_selection(click)
+
     return chart
+
 
 
 def create_map_chart(countries, mergedf):
@@ -58,18 +62,18 @@ def create_map_chart(countries, mergedf):
         "equirectangular"
     ).properties(
         width=800,
-        height=300
+        height=250
     )
 
     points = alt.Chart(mergedf).mark_circle().encode(
         longitude='longitude:Q',
         latitude='latitude:Q',
-        size=alt.value(40),
+        size=alt.value(35),
         color='Country Name:N',
         tooltip='Country Name'
     )
 
-    chart = (background + points)
+    chart = (background + points).configure_legend(title=None)
     return chart
 
 
