@@ -336,7 +336,7 @@ def plot_map(countries, years, home_cts, home_tts, resources_air):
     selected_countries = au.get_countries_based_on_sliders(bi, countries, sliders_series)
 
     df_hme = bi[(bi['Country Name'].isin(selected_countries)) & (bi['Series Name']=='Cost of business start-up procedures (% of GNI per capita)') & (bi['year'].isin(years))]
-    df_hme['year'] = pd.to_datetime(df_hme['year'], format='%Y')
+    df_hme.loc[:, 'year'] = pd.to_datetime(df_hme['year'], format='%Y')
 
     countries = alt.topo_feature(data.world_110m.url, 'countries')
     mergedf=pd.merge(df_hme, latlon, how='left',left_on='Country Name',right_on='country')
@@ -357,11 +357,11 @@ def plot_line(countries, years, home_cts, home_tts, resources_air):
 
     series_name_cts = 'Cost of business start-up procedures (% of GNI per capita)'
     df_cts = bi[(bi['Country Name'].isin(countries)) & (bi['Series Name']== series_name_cts) & (bi['year'].isin(years))]
-    df_cts['year'] = pd.to_datetime(df_cts['year'], format='%Y')
+    df_cts.loc[:, 'year'] = pd.to_datetime(df_cts['year'], format='%Y')
 
     series_name_tts = 'Time required to start a business (days)'
     df_tts = bi[(bi['Country Name'].isin(countries)) & (bi['Series Name']== series_name_tts) & (bi['year'].isin(years))]
-    df_tts['year'] = pd.to_datetime(df_tts['year'], format='%Y')
+    df_tts.loc[:, 'year'] = pd.to_datetime(df_tts['year'], format='%Y')
 
     sliders_series = [
         (home_cts, 'Cost of business start-up procedures (% of GNI per capita)'),
@@ -381,6 +381,7 @@ def plot_line(countries, years, home_cts, home_tts, resources_air):
 # --- RESOURCES CALLBACK --- 
 
 # callback for resources int_line
+
 @app.callback(
     Output(component_id="int_line", component_property="srcDoc"),
     Input(component_id="countries", component_property="value"),
@@ -395,7 +396,7 @@ def plot_int_line(countries, years, home_cts, home_tts, resources_air):
     series_name = 'Interest rate spread (lending rate minus deposit rate, %)'
 
     df = bi[(bi['Country Name'].isin(countries)) & (bi['Series Name']==series_name) & (bi['year'].isin(years))] 
-    df['year'] = pd.to_datetime(df['year'], format='%Y')
+    df.loc[:, 'year'] = pd.to_datetime(df['year'], format='%Y')
     
     sliders_series = [
         (home_cts, 'Cost of business start-up procedures (% of GNI per capita)'),
@@ -453,6 +454,7 @@ def plot_pr_bar(countries, years, home_cts, home_tts, resources_air):
     
     series_name = 'Labor force participation rate for ages 15-24, total (%) (national estimate)'
     df = bi[(bi['Country Name'].isin(countries)) & (bi['Series Name'] == series_name) & (bi['year'].isin(years))]
+    df.loc[:, 'year'] = pd.to_datetime(df['year'], format='%Y')
     
     sliders_series = [
         (home_cts, 'Cost of business start-up procedures (% of GNI per capita)'),
