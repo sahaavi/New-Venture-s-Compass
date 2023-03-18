@@ -62,7 +62,8 @@ app.layout = dbc.Container([
                     max=30,
                     allowCross=False,
                     tooltip={
-                        'placement':'bottom'
+                        'placement':'bottom',
+                        'always_visible': True
                     }
                 )
             ]),
