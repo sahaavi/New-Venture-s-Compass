@@ -97,13 +97,13 @@ app.layout = dbc.Container([
             # Time to Export Slider
             html.Div([
                 html.Label(
-                'Time to Export (hours)'
+                'Average Time to Export (hours)'
                 ),
                 dcc.RangeSlider(
                     id='logistics_tte',
                     min=0,
-                    max=200,
-                    value=[2, 30],
+                    max=1200,
+                    value=[0, 1200],
                     allowCross=False,
                     tooltip={
                         'placement':'bottom',
@@ -114,13 +114,13 @@ app.layout = dbc.Container([
             # Time to Import Slider
             html.Div([
                 html.Label(
-                'Time to Import (hours)'
+                'Average Time to Import (hours)'
                 ),
                 dcc.RangeSlider(
                     id='logistics_tti',
                     min=0,
-                    max=200,
-                    value=[2, 40],
+                    max=1200,
+                    value=[0, 1200],
                     allowCross=False,
                     tooltip={
                         'placement':'bottom',
