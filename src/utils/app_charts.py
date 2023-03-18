@@ -159,13 +159,18 @@ def create_average_export_Clear_time(df):
     Returns:
         alt.Chart: An Altair bar chart showing Average time to clear Exports through customs (days) by country and year.
     """
+    click = alt.selection_multi(fields=['Country Name'], bind='legend')
+
     chart = alt.Chart(df).mark_bar().encode(
         x=alt.X('Country Name', title=None, axis=None),
         y=alt.Y('value', title='Days'),
         color='Country Name',
         column=alt.Column('year', title=None),
-        tooltip=['Country Name', 'year', 'value']).configure_legend(title=None)
-    
+        tooltip=['Country Name', 'year', 'value'],
+        opacity=alt.condition(click, alt.value(0.9), alt.value(0.2))
+    ).configure_legend(title=None)
+
+    chart = (chart).add_selection(click)
     return chart
 
 def create_time_export_import_chart(df_tte, df_tti):
