@@ -1,4 +1,5 @@
 import altair as alt
+import plotly.graph_objects as go
 
 def create_tts_cts_charts(df_cts, df_tts):
     """
@@ -147,3 +148,97 @@ def create_participation_rate_chart(df):
 
     return chart
 
+
+def create_average_export_Clear_time(df):
+    """
+    Create an Altair vertical grouped bar chart for Average time to clear Exports through customs (days) by country and year.
+
+    Args:
+        df (pd.DataFrame): A data frame containing columns 'Country Name', 'year', and 'value'.
+
+    Returns:
+        alt.Chart: An Altair bar chart showing Average time to clear Exports through customs (days) by country and year.
+    """
+    chart = alt.Chart(df).mark_bar().encode(
+        x=alt.X('Country Name', title=None, axis=None),
+        y=alt.Y('value', title='Days'),
+        color='Country Name',
+        column=alt.Column('year', title=None),
+        tooltip=['Country Name', 'year', 'value']).configure_legend(title=None)
+    
+    return chart
+
+def create_time_export_import_chart(df_tte, df_tti):
+    """
+    Create an Altair horizontal multi grouped bar chart for Time to Export and Time to Import by country and year.
+
+    Args:
+        df (pd.DataFrame): A data frame containing columns 'Country Name', 'year', and 'value'.
+
+    Returns:
+        alt.Chart: An Altair bar chart showing Time to Export and Time to Import by country and year.
+    """
+    click = alt.selection_multi(fields=['Country Name'], bind='legend')
+
+    tte_chart = alt.Chart(df_tte).mark_bar(orient='horizontal').encode(
+        y=alt.Y('year', title=None),
+        x=alt.X('value', title=None),
+        color=alt.Color('Country Name', legend=alt.Legend(title=None)),
+        column=alt.Column('Series Name', title = None, header=alt.Header(labelAngle=0)),
+        # row=alt.Row('Series Name', title=None, header=alt.Header(labelAngle=0)),
+        tooltip=['Country Name', 'year', 'value'],
+        opacity=alt.condition(click, alt.value(0.9), alt.value(0.2))
+    ).properties( 
+            height = 100,
+            width = 300)
+
+    tti_chart = alt.Chart(df_tti).mark_bar(orient='horizontal').encode(
+        y=alt.Y('year', title=None),
+        x=alt.X('value', title=None),
+        color=alt.Color('Country Name', legend=alt.Legend(title=None)),
+        column=alt.Column('Series Name', title = None, header=alt.Header(labelAngle=0)),
+        # row=alt.Row('Series Name', title=None, header=alt.Header(labelAngle=0, titleOrient='top')),
+        tooltip=['Country Name', 'year', 'value'],
+        opacity=alt.condition(click, alt.value(0.9), alt.value(0.2))
+    ).properties( 
+            height = 100,
+            width = 300)
+    
+    chart = (tte_chart & tti_chart).add_selection(click)
+    return chart
+
+
+def create_logistics_performance_chart(df, max, min):
+    """
+    Create a Plotly radar chart for Logistics Performance Index by country and year and value.
+
+    Args:
+        df (pd.DataFrame): A data frame containing columns 'Country Name', 'year', and 'value'.
+
+    Returns:
+        plotly.graph: A plotly radar chart showing Logistics Performance Index by country and year and value.
+    """
+    countries = df['Country Name'].unique()
+    years = df['year'].unique()
+    
+    fig = go.Figure()
+    # tracing layout
+    for i in countries:
+        fig.add_trace(go.Scatterpolar(
+        r=df[(df["Country Name"]==i) &
+             df["year"].isin(years)]["value"].values.tolist(),
+        theta=years,
+        fill='toself',
+        name=i,
+        connectgaps=True
+    ))
+    # each circle values
+    fig.update_layout(
+    polar=dict(
+        radialaxis=dict(
+        visible=True,
+        range=[min, max]
+        )),
+    showlegend=False
+    )
+    return fig
