@@ -22,7 +22,7 @@ def create_tts_cts_charts(df_cts, df_tts):
         color=alt.condition(brush, 'Country Name', alt.value('lightgray')),
         opacity=alt.condition(click, alt.value(0.9), alt.value(0.2))
     ).add_selection(brush).properties(
-        width=300,
+        width=350,
         height=250,
         title={"text": "Cost to implement business", "fontSize": 14, "fontWeight": "bold", "anchor": "middle"}
     )
@@ -34,12 +34,12 @@ def create_tts_cts_charts(df_cts, df_tts):
         opacity=alt.condition(click, alt.value(0.9), alt.value(0.2)),
         tooltip=['Country Name', 'year', 'value']
     ).properties(
-        width=300,
+        width=350,
         height=250,
         title={"text": "Time to implement business", "fontSize": 14, "fontWeight": "bold", "anchor": "middle"}
     ))
 
-    chart = (cost_chart | time_chart).add_selection(click)
+    chart = (cost_chart | time_chart).add_selection(click).configure(background='DarkKhaki')
 
     return chart
 
@@ -57,13 +57,13 @@ def create_map_chart(countries, mergedf):
     alt.Chart: Combined Altair chart object
     """
     background = alt.Chart(countries).mark_geoshape(
-        fill='palegreen',
-        stroke='white'
+        fill='mintcream',
+        stroke='lightgray'
     ).project(
         "equirectangular"
     ).properties(
         width=800,
-        height=250
+        height=350
     )
 
     points = alt.Chart(mergedf).mark_circle().encode(
@@ -74,7 +74,8 @@ def create_map_chart(countries, mergedf):
         tooltip='Country Name'
     )
 
-    chart = (background + points).configure_legend(title=None)
+    chart = (background + points).configure_legend(title=None).configure(background='darkkhaki')
+
     return chart
 
 
@@ -96,7 +97,7 @@ def create_interest_rate_chart(df):
     ).properties(
         height=200,
         width=700
-    )
+    ).configure(background='darkkhaki')
     return chart
 
 
@@ -118,10 +119,10 @@ def create_unemployment_rate_chart(df):
         tooltip=['Country Name', 'year', 'value']
     ).properties(
         height=250,
-        width=100
+        width=330
     ).configure_view(
         stroke='transparent'
-    )
+    ).configure(background='darkkhaki')
 
     return chart
 
@@ -142,9 +143,9 @@ def create_participation_rate_chart(df):
         color=alt.Color('Country Name', legend=alt.Legend(title=None)),
         tooltip=['Country Name', 'year', 'value']
     ).properties(
-        height=300,
-        width=300
-    )
+        height=285,
+        width=310
+    ).configure(background='darkkhaki')
 
     return chart
 
@@ -164,7 +165,9 @@ def create_average_export_Clear_time(df):
         y=alt.Y('value', title='Days'),
         color='Country Name',
         column=alt.Column('year', title=None),
-        tooltip=['Country Name', 'year', 'value']).configure_legend(title=None)
+        tooltip=['Country Name', 'year', 'value']).properties(
+        height=290,
+        width=200).configure_legend(title=None).configure(background='darkkhaki')
     
     return chart
 
@@ -204,7 +207,7 @@ def create_time_export_import_chart(df_tte, df_tti):
             height = 100,
             width = 300)
     
-    chart = (tte_chart & tti_chart).add_selection(click)
+    chart = (tte_chart & tti_chart).add_selection(click).configure(background='darkkhaki')
     return chart
 
 
@@ -229,6 +232,7 @@ def create_logistics_performance_chart(df, max, min):
              df["year"].isin(years)]["value"].values.tolist(),
         theta=years,
         fill='toself',
+        #fillcolor='Olive',
         name=i,
         connectgaps=True
     ))
@@ -237,7 +241,9 @@ def create_logistics_performance_chart(df, max, min):
     polar=dict(
         radialaxis=dict(
         visible=True,
-        range=[min, max]
+        range=[min, max],
+        gridcolor='Black',
+        #color='Black'
         )),
     showlegend=False
     )
