@@ -22,16 +22,24 @@ server = app.server
 app.layout = dbc.Container([
     #app header
     dbc.Row([
-    html.H1("New Venture(s) Compass", style={"textAlign": "center"}),
-    html.Hr(),
+    html.H1("New Venture(s) Compass", style={
+                    'backgroundColor': 'Olive',
+                    'padding': 20,
+                    'color': 'white',
+                    'margin-top': 20,
+                    'margin-bottom': 20,
+                    'text-align': 'center',
+                    'font-size': '48px',
+                    'border-radius': 3}),
+    html.Br(),
     ]),
     # filters row
     dbc.Row([
         # side filter column
         dbc.Col([
             html.Br(),
-            html.H4('Filters & Controls'),
-            html.Hr(),
+            html.H4('Filters & Controls',style={
+                    'backgroundColor': 'Gray',"textAlign": "center"}),
             #Home tab sliders
             html.Br(),
             html.H5("Home tab", style={"textAlign": "center"}),
@@ -143,23 +151,51 @@ app.layout = dbc.Container([
                     value=30
                 )
             ]),
+            html.Br(),
+            html.Br(),
+            html.H4('About this dashboard',style={
+                    'backgroundColor': 'Gray',"textAlign": "center"}),
+            #Training Link
+            html.Br(),
+            html.H5("User Training", style={"textAlign": "center"}),
+            html.Br(),
+            html.A("Click here to watch our training video",href="https://youtu.be/BkBVHeSRPJE"),
+            html.Br(),
+            #Data source
+            html.Br(),
+            html.H5("Data Source", style={"textAlign": "center"}),
+            html.Br(),
+            html.P("Data Source: Worldbank"),
+            html.Br(),
+            html.P("Last Update: 2019"),
+            html.Br(),
+            html.P("Next update: Expected in April 2024 with new methodology"),
+            html.Br(),
+            html.P("Datasource Links: "),
+            html.A("Worldbank raw data",href="https://databank.worldbank.org/source/world-development-indicators#"), 
+            html.Br(),
+            html.A("Worldbank assessment methodology",href="https://www.worldbank.org/en/programs/business-enabling-environment"),
+            html.Br(),
+            #Data source related info
+            
         ], 
         md=3,
-        style={'border': '1px solid #d3d3d3', 'border-radius': '10px'}
+        style={'border': '1px solid #d3d3d3', 'border-radius': '10px','background-color':'Silver'}
         ),
         # end of side filter column
         # tabs column
         dbc.Col([
             #Header across tabs
-            html.H3("An Interactive Guide to select countries for establishing your new business", style={"textAlign": "center"}),
-            html.Hr(),
+            html.H3("An interactive guide to select countries for establishing your new business", style={"textAlign": "center"}),
+            html.Br(),
             #Overview of the app
             dbc.Row([
+                html.Br(),
                 html.P('Hi there! Congratulations on thinking about starting a new business! \
                 This dashboard is an interactive guide that helps to understand different aspects that are important in starting a business.'),
                 html.P('In default mode, data for 6 countries is shown, with each country randomly chosen from a different continent (excluding Antarctica) using the World Bank database. \
-                We recommend to start browsing through the tabs to get an idea of different aspects. \
-                Once finished, you can choose years and countries for your own assessment, Remember, both inputs are mandatory. \
+                We recommend to start browsing through the three tabs namely Home, Resources, Logistics to get an idea of different aspects. \
+                Once finished, you can choose years and countries for your own assessment using below dropdowns. Remember, both inputs are mandatory. \
                 Sliders are present on the side to further fine tune your selection for each tab. \
                 ')
             ]),
@@ -199,25 +235,26 @@ app.layout = dbc.Container([
             dbc.Row([
                 #html.P('With a help paragraph'),
                 # tabs
-                dbc.Tabs(id='tabs', children=[
+                dbc.Tabs(id='tabs', style={'border': '1px solid white','margin-left': 20},children=[
                     # Home Tab
-                    dbc.Tab(label='Home', children=[
+                    dbc.Tab(label='Home', style={'background-color':'HoneyDew','border': '1px solid #d3d3d3','border-radius': '10px'},
+                            children=[
                         dbc.Row([
                             html.H5("Geographic Location")
                         ]),
                         dbc.Row([
                             dbc.Col([
-                                html.P('Understanding the geographic location of the country is very important. This helps to know the neighboring countries, ports etc.'), 
+                                html.P('Understanding the geographic location of the country is very important. This helps to know the neighboring countries, ports etc.'),
                                 html.Iframe(
                                     id='hm_map',
-                                    style={'border-width': '0', 'width': '100%', 'height': '300px'}
+                                    style={'border-width': '0', 'width': '100%', 'height': '400px'}
                                 )
                             ])   
                         ]),
                         dbc.Row([
                             html.H5("Cost and Time requirements to start a business"),
-                            html.P("Cost and time factors are very important. Cost tells us how costly interms of a countrie's % of income per capita \
-                                    is required to start a business in the country. Time tells us how many days are required in business starting procedures. \
+                            html.P("Cost and time factors are very important. Cost tells us how costly (interms of a countrie's % of income per capita) \
+                                    it is to start a business in the country. Time tells us how many days are required in business starting procedures to open business. \
                                     Lower the percentage and days, favorable it is for anyone to start a business.")
                         ]),
                        dbc.Row([
@@ -231,7 +268,7 @@ app.layout = dbc.Container([
                     ]),
                     # end of home tab
                     # Resources Tab
-                    dbc.Tab(label='Resources', children=[
+                    dbc.Tab(label='Resources', style={'background-color':'HoneyDew','border': '1px solid #d3d3d3','border-radius': '10px'}, children=[
                         dbc.Row([
                             html.H5("Financial Consideration"),
                             html.P("As the next step, we think about knowledge of different resources available or necessary for the business and their supply and demand. \
@@ -246,57 +283,58 @@ app.layout = dbc.Container([
                                 )
                             ])   
                         ]),
+                        html.Br(),
                         dbc.Row([
+                            html.Br(),
                             html.H5("Non-Financial Consideration"),
-                            html.P("Other type of resources available or necessary for the business is labor related. Information regarding them is provided below.")
+                            html.P("Second type of resource available or necessary for the business is labor related. Information regarding human capital is provided below.")
                         ]),
                         dbc.Row([
                             dbc.Col([
                                 html.H6("Unemployment Rates between Labor Force with Basic, Intermediate, and Advanced Education"),
                                 html.Iframe(
                                     id='ur_bar',
-                                    style={'border-width': '0', 'width': '100%', 'height': '350px'}
+                                    style={'border-width': '0', 'width': '100%', 'height': '400px'}
                                 )
                             ]),
                             dbc.Col([
                                 html.H6("National Estimate of Total Labour Force Participation Rate for Ages 15-24"),
                                 html.Iframe(
                                     id='pr_bar',
-                                    style={'border-width': '0', 'width': '100%', 'height': '350px'}
+                                    style={'border-width': '0', 'width': '100%', 'height': '400px'}
                                 )
                             ])
                         ],className="g-0") 
                     ]),
                     # Logistics Tab
-                    dbc.Tab(label='Logistics', children=[
+                    dbc.Tab(label='Logistics', style={'background-color':'HoneyDew','border': '1px solid #d3d3d3','border-radius': '10px'},children=[
                         dbc.Row([
                             html.H5("Imports and Exports"),
-                            html.P("Logistics of how easy and quick it is to import and export and clear customs? Information regarding them is provided below \
-                                    which marks the final items to consider.")
+                            html.P("How easy and quick it is to import and export and clear customs? Information regarding them is provided below. Logistics marks the final items to consider.")
                         ]),
                         # 1st row for bar and radar chart
                         dbc.Row([
                             # multi-bar chart
                             dbc.Col([
-                                html.H5("Average time to clear Exports through customs (days)"),
+                                html.H6("Average time to clear Exports through customs (days)"),
                                 html.Iframe(
                                     id='cc_bar',
-                                    style={'border-width': '0', 'width': '100%', 'height': '500px'}
+                                    style={'border-width': '0', 'width': '100%', 'height': '350px'}
                                 )
                             ]),
                             # radar chart
                             dbc.Col([
-                                html.H5("Logistics Performance Index", style={"text-align": "center"}),
-                                dcc.Graph(id="lpi_radar", figure={})
+                                html.H6("Logistics Performance Index", style={"text-align": "center"}),
+                                dcc.Graph(id="lpi_radar", figure={},style={'width':'50vh','height':'45vh','backgroundColor':'Olive'})
                             ])
                         ]),
                         # end of 1st row for bar and radar chart
                         # 2nd row for horizontal stacked bar
                         dbc.Row([
-                            html.H5("Time to Export/Import (hours)"),
+                            html.H6("Time to Export/Import (hours)"),
                             html.Iframe(
                                     id='tte_sb',
-                                    style={'border-width': '0', 'width': '100%', 'height': '400px'}
+                                    style={'border-width': '0', 'width': '100%', 'height': '350px'}
                                 )
                         ]),
                     ])
@@ -309,7 +347,7 @@ app.layout = dbc.Container([
         # end of tabs column
     ])
     # end of filters row
-])
+],style={'background-color':'HoneyDew','border': '1px solid #d3d3d3'})
 
 # --- HOME CALLBACK ---
 
@@ -638,4 +676,4 @@ def plot_tte_sb(countries, years, logistics_cc, logistics_tte, logistics_tti, ho
     return chart.to_html()
 
 if __name__ == '__main__':
-    app.run_server(debug=False)
+    app.run_server(debug=True)
