@@ -110,8 +110,7 @@ app.layout = dbc.Container([
                 dcc.RangeSlider(
                     id='logistics_tte',
                     min=0,
-                    max=1200,
-                    value=[0, 1200],
+                    max=50,
                     allowCross=False,
                     tooltip={
                         'placement':'bottom',
@@ -127,8 +126,7 @@ app.layout = dbc.Container([
                 dcc.RangeSlider(
                     id='logistics_tti',
                     min=0,
-                    max=1200,
-                    value=[0, 1200],
+                    max=50,
                     allowCross=False,
                     tooltip={
                         'placement':'bottom',
@@ -662,9 +660,7 @@ def plot_tte_sb(countries, years, logistics_cc, logistics_tte, logistics_tti, ho
         (resources_air, 'Interest rate spread (lending rate minus deposit rate, %)'),
         (logistics_cc, 'Average time to clear exports through customs (days)') ,
         (logistics_tte, 'Time to export, border compliance (hours)'),
-        (logistics_tte, 'Time to export, documentary compliance (hours)'),
         (logistics_tti, 'Time to import, border compliance (hours)'),
-        (logistics_tti, 'Time to import, documentary compliance (hours)')
     ]
 
     selected_countries = au.get_countries_based_on_sliders(bi, countries, sliders_series)

@@ -24,7 +24,7 @@ def create_tts_cts_charts(df_cts, df_tts):
     ).add_selection(brush).properties(
         width=350,
         height=250,
-        title={"text": "Cost to implement business", "fontSize": 14, "fontWeight": "bold", "anchor": "middle"}
+        title={"text": "Cost to Implement Business", "fontSize": 14, "fontWeight": "bold", "anchor": "middle"}
     )
 
     time_chart = (alt.Chart(df_tts).mark_line(point=True).encode(
@@ -36,7 +36,7 @@ def create_tts_cts_charts(df_cts, df_tts):
     ).properties(
         width=350,
         height=250,
-        title={"text": "Time to implement business", "fontSize": 14, "fontWeight": "bold", "anchor": "middle"}
+        title={"text": "Time to Implement Business", "fontSize": 14, "fontWeight": "bold", "anchor": "middle"}
     ))
 
     chart = (cost_chart | time_chart).add_selection(click).configure(background='DarkKhaki')
@@ -89,16 +89,19 @@ def create_interest_rate_chart(df):
     Returns:
         alt.Chart: An Altair line chart showing interest rate spread by country and year.
     """
+    click = alt.selection_multi(fields=['Country Name'], bind='legend')
+    
     chart = alt.Chart(df).mark_line(point=True).encode(
         x=alt.X('year:T', scale=alt.Scale(zero=False), title=None),
         y=alt.Y('value:Q', title="Interest Rate Spread", axis=alt.Axis(labelFontSize=12, titleFontSize=14)),
         color=alt.Color('Country Name', legend=alt.Legend(title=None)),
-        tooltip=['Country Name', 'year', 'value']
+        tooltip=['Country Name', 'year', 'value'],
+        opacity=alt.condition(click, alt.value(0.9), alt.value(0.2))
     ).properties(
-        height=200,
+        height=190,
         width=700
     ).configure(background='darkkhaki')
-    return chart
+    return chart.add_selection(click)
 
 
 def create_unemployment_rate_chart(df):
@@ -111,12 +114,15 @@ def create_unemployment_rate_chart(df):
     Returns:
         alt.Chart: An Altair bar chart showing unemployment rate by country, year, and education level.
     """
+    click = alt.selection_multi(fields=['Country Name'], bind='legend')
+
     chart = alt.Chart(df).mark_bar().encode(
         x=alt.X('education_level:N', title=None, axis=alt.Axis(labels=False, ticks=False)),
         y=alt.Y('value:Q', title="Unemployment Rate", axis=alt.Axis(titleFontSize=14)),
         color=alt.Color('education_level:N', legend=alt.Legend(title='Education Level', orient='bottom', columns=len(df['education_level'].unique()))),
         column=alt.Column('Country Name:N', title=None),
-        tooltip=['Country Name', 'year', 'value']
+        tooltip=['Country Name', 'year', 'value'],
+        opacity=alt.condition(click, alt.value(0.9), alt.value(0.2))
     ).properties(
         height=250,
         width=330
@@ -124,7 +130,7 @@ def create_unemployment_rate_chart(df):
         stroke='transparent'
     ).configure(background='darkkhaki')
 
-    return chart
+    return chart.add_selection(click)
 
 
 def create_participation_rate_chart(df):
@@ -137,17 +143,20 @@ def create_participation_rate_chart(df):
     Returns:
         alt.Chart: An Altair bar chart showing participation rate by country and year.
     """
+    click = alt.selection_multi(fields=['Country Name'], bind='legend')
+
     chart = alt.Chart(df).mark_bar().encode(
         x=alt.X('value:Q', title="Participation Rate", axis=alt.Axis(titleFontSize=14)),
         y=alt.Y('Country Name:N', title=None),
         color=alt.Color('Country Name', legend=alt.Legend(title=None)),
-        tooltip=['Country Name', 'year', 'value']
+        tooltip=['Country Name', 'year', 'value'],
+        opacity=alt.condition(click, alt.value(0.9), alt.value(0.2))
     ).properties(
         height=285,
-        width=310
+        width=290
     ).configure(background='darkkhaki')
 
-    return chart
+    return chart.add_selection(click)
 
 
 def create_average_export_Clear_time(df):
@@ -160,6 +169,8 @@ def create_average_export_Clear_time(df):
     Returns:
         alt.Chart: An Altair bar chart showing Average time to clear Exports through customs (days) by country and year.
     """
+    df = df[df['value'] != 0]
+
     click = alt.selection_multi(fields=['Country Name'], bind='legend')
 
     chart = alt.Chart(df).mark_bar().encode(
