@@ -11,27 +11,23 @@ The app has three different tabs – 1. Main: This gives brief recommendation on
 For specific inputs, a dropdown menu is provided that allows multiple countries or years selection. Sliders are present on the side to further fine tune parameters. Final goal is that these provide information for user to be able to finalize the exact country or countries for their new ventures and investments that meets their expectations. 
 
 ## Development and Implementation - First release 
-a. Dashboard in dash and Python and hosted on heroku cloud platform. We chose Python over R for implementation as the different charts we have are easily to implement and there is good community and documentation support for future.
-b. Default view with user training video.
-c. Various types of graphs and interactivity between graphs, input dropdowns and sliders (attention to consistency).
-d. Data sources and details.
+a. Dashboard in dash and Python and hosted on heroku cloud platform. We chose Python over R for implementation as the different charts we have are easily to implement and there is good community and documentation support for future.  
+b. Default view with user training video.  
+c. Various types of graphs and interactivity between graphs, input dropdowns and sliders (attention to consistency).  
+d. Data sources and details.  
 e. TA feedback - added training video, expanded size of map chart, added default for Time to Import (hours) and Time to Export graphs.
 
 ### Development and Implementation - The road ahead
-
 e. Restrict inputs systematically to 10 countries (deprioritized due to timelines).
 
 ### Dashboard Advantages
 a. There is text embedded above each tab which gives the reader a sense of what they are looking for and why its necessary. 
-This story telling approach will guide user interactively and with rationale to select countries.
-
+This story telling approach will guide user interactively and with rationale to select countries.  
 b. Dashboard has a default view, this makes anyone get quickly familiar with what the dashboard can deliver in an intuitive way. 
 
 ## Dashboard Limitations
-a. Data is available only till 2019, new data will be available only in 2024. Till then, history is limited for decision.
-
+a. Data is available only till 2019, new data will be available only in 2024. Till then, history is limited for decision.  
 b. Some data is not available in the database, graph would report NA. NA is imputed to 0 in Average time to clear Exports chart.
-
 
 ## Dashboard Open Issues
 Please refer to the GitHub issues list and road ahead section. 
