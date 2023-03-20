@@ -40,6 +40,11 @@ app.layout = dbc.Container([
             html.Br(),
             html.H4('Filters & Controls',style={
                     'backgroundColor': 'Gray',"textAlign": "center"}),
+                    html.P('*Note: Some selected countries may not appear in some charts due to insufficient data before applying any filters',style={
+                    'textAlign': 'left',
+                    'fontSize': '10px',
+                    'opacity': '0.5'
+                    }),
             #Home tab sliders
             html.Br(),
             html.H5("Home tab", style={"textAlign": "center"}),
