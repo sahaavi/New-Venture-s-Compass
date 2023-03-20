@@ -16,7 +16,7 @@ bi['year'] = bi['year'].astype(str)
 
 selected_countries = None
 
-app = dash.Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
+app = dash.Dash(external_stylesheets=[dbc.themes.FLATLY])
 server = app.server
 
 app.layout = dbc.Container([
@@ -322,8 +322,8 @@ app.layout = dbc.Container([
                             ]),
                             # radar chart
                             dbc.Col([
-                                html.H6("Logistics Performance Index", style={"text-align": "center"}),
-                                dcc.Graph(id="lpi_radar", figure={},style={'width':'50vh','height':'45vh','backgroundColor':'Olive'})
+                                html.H6("Logistics Performance Index"),
+                                dcc.Graph(id="lpi_radar", figure={})
                             ])
                         ]),
                         # end of 1st row for bar and radar chart
@@ -364,17 +364,9 @@ app.layout = dbc.Container([
 def plot_map(countries, years, home_cts, home_tts, resources_air, logistics_cc, logistics_tte, logistics_tti):
     
     logistics_cc = [0, logistics_cc]
-    sliders_series = [
-        (home_cts, 'Cost of business start-up procedures (% of GNI per capita)'),
-        (home_tts, 'Time required to start a business (days)'),
-        (resources_air, 'Interest rate spread (lending rate minus deposit rate, %)'),
-        (logistics_cc, 'Average time to clear exports through customs (days)') ,
-        (logistics_tte, 'Time to export, border compliance (hours)'),
-        (logistics_tte, 'Time to export, documentary compliance (hours)'),
-        (logistics_tti, 'Time to import, border compliance (hours)'),
-        (logistics_tti, 'Time to import, documentary compliance (hours)')
-    ]
-
+    
+    sliders_series = au.sliders_series(home_cts, home_tts, resources_air, logistics_cc, logistics_tte, logistics_tti)
+    
     #intersection of countries after all filters applied
     selected_countries = au.get_countries_based_on_sliders(bi, countries, sliders_series)
 
@@ -410,16 +402,7 @@ def plot_line(countries, years, home_cts, home_tts, resources_air, logistics_cc,
     df_tts = bi[(bi['Country Name'].isin(countries)) & (bi['Series Name']== series_name_tts) & (bi['year'].isin(years))]
     df_tts.loc[:, 'year'] = pd.to_datetime(df_tts['year'], format='%Y')
 
-    sliders_series = [
-        (home_cts, 'Cost of business start-up procedures (% of GNI per capita)'),
-        (home_tts, 'Time required to start a business (days)'),
-        (resources_air, 'Interest rate spread (lending rate minus deposit rate, %)'),
-        (logistics_cc, 'Average time to clear exports through customs (days)') ,
-        (logistics_tte, 'Time to export, border compliance (hours)'),
-        (logistics_tte, 'Time to export, documentary compliance (hours)'),
-        (logistics_tti, 'Time to import, border compliance (hours)'),
-        (logistics_tti, 'Time to import, documentary compliance (hours)')
-    ]
+    sliders_series = au.sliders_series(home_cts, home_tts, resources_air, logistics_cc, logistics_tte, logistics_tti)
 
     selected_countries = au.get_countries_based_on_sliders(bi, countries, sliders_series)
 
@@ -454,16 +437,7 @@ def plot_int_line(countries, years, home_cts, home_tts, resources_air, logistics
     df = bi[(bi['Country Name'].isin(countries)) & (bi['Series Name']==series_name) & (bi['year'].isin(years))] 
     df.loc[:, 'year'] = pd.to_datetime(df['year'], format='%Y')
     
-    sliders_series = [
-        (home_cts, 'Cost of business start-up procedures (% of GNI per capita)'),
-        (home_tts, 'Time required to start a business (days)'),
-        (resources_air, 'Interest rate spread (lending rate minus deposit rate, %)'),
-        (logistics_cc, 'Average time to clear exports through customs (days)') ,
-        (logistics_tte, 'Time to export, border compliance (hours)'),
-        (logistics_tte, 'Time to export, documentary compliance (hours)'),
-        (logistics_tti, 'Time to import, border compliance (hours)'),
-        (logistics_tti, 'Time to import, documentary compliance (hours)')
-    ]
+    sliders_series = au.sliders_series(home_cts, home_tts, resources_air, logistics_cc, logistics_tte, logistics_tti)
 
     selected_countries = au.get_countries_based_on_sliders(bi, countries, sliders_series)
     df = df[df['Country Name'].isin(selected_countries)]
@@ -494,16 +468,7 @@ def plot_ur_bar(countries, years, home_cts, home_tts, resources_air, logistics_c
     bi['education_level'] = bi['Series Name'].str.extract('Unemployment with (\w+) education')
     df = bi[(bi['Country Name'].isin(countries)) & (bi['Series Name'].isin(series)) & (bi['year'].isin(years))]
 
-    sliders_series = [
-        (home_cts, 'Cost of business start-up procedures (% of GNI per capita)'),
-        (home_tts, 'Time required to start a business (days)'),
-        (resources_air, 'Interest rate spread (lending rate minus deposit rate, %)'),
-        (logistics_cc, 'Average time to clear exports through customs (days)') ,
-        (logistics_tte, 'Time to export, border compliance (hours)'),
-        (logistics_tte, 'Time to export, documentary compliance (hours)'),
-        (logistics_tti, 'Time to import, border compliance (hours)'),
-        (logistics_tti, 'Time to import, documentary compliance (hours)')
-    ]
+    sliders_series = au.sliders_series(home_cts, home_tts, resources_air, logistics_cc, logistics_tte, logistics_tti)
 
     selected_countries = au.get_countries_based_on_sliders(bi, countries, sliders_series)
     df = df[df['Country Name'].isin(selected_countries)]
@@ -531,16 +496,7 @@ def plot_pr_bar(countries, years, home_cts, home_tts, resources_air, logistics_c
     df = bi[(bi['Country Name'].isin(countries)) & (bi['Series Name'] == series_name) & (bi['year'].isin(years))]
     df.loc[:, 'year'] = pd.to_datetime(df['year'], format='%Y')
     
-    sliders_series = [
-        (home_cts, 'Cost of business start-up procedures (% of GNI per capita)'),
-        (home_tts, 'Time required to start a business (days)'),
-        (resources_air, 'Interest rate spread (lending rate minus deposit rate, %)'),
-        (logistics_cc, 'Average time to clear exports through customs (days)') ,
-        (logistics_tte, 'Time to export, border compliance (hours)'),
-        (logistics_tte, 'Time to export, documentary compliance (hours)'),
-        (logistics_tti, 'Time to import, border compliance (hours)'),
-        (logistics_tti, 'Time to import, documentary compliance (hours)')
-    ]
+    sliders_series = au.sliders_series(home_cts, home_tts, resources_air, logistics_cc, logistics_tte, logistics_tti)
 
     selected_countries = au.get_countries_based_on_sliders(bi, countries, sliders_series)
     df = df[df['Country Name'].isin(selected_countries)]
@@ -570,16 +526,7 @@ def plot_cc_bar(countries, years, logistics_cc, logistics_tte, logistics_tti, ho
             (bi['year'].isin(years)) & 
             (bi['Series Name']=="Average time to clear exports through customs (days)")]
     
-    sliders_series = [
-        (home_cts, 'Cost of business start-up procedures (% of GNI per capita)'),
-        (home_tts, 'Time required to start a business (days)'),
-        (resources_air, 'Interest rate spread (lending rate minus deposit rate, %)'),
-        (logistics_cc, 'Average time to clear exports through customs (days)') ,
-        (logistics_tte, 'Time to export, border compliance (hours)'),
-        (logistics_tte, 'Time to export, documentary compliance (hours)'),
-        (logistics_tti, 'Time to import, border compliance (hours)'),
-        (logistics_tti, 'Time to import, documentary compliance (hours)')
-    ]
+    sliders_series = au.sliders_series(home_cts, home_tts, resources_air, logistics_cc, logistics_tte, logistics_tti)
 
     selected_countries = au.get_countries_based_on_sliders(bi, countries, sliders_series)
     df = df[df['Country Name'].isin(selected_countries)]
@@ -610,16 +557,7 @@ def plot_lpi_radar(countries, years, logistics_cc, logistics_tte, logistics_tti,
             (bi['year'].isin(years)) & 
             (bi['Series Name']=="Logistics performance index: Overall (1=low to 5=high)")]
 
-    sliders_series = [
-        (home_cts, 'Cost of business start-up procedures (% of GNI per capita)'),
-        (home_tts, 'Time required to start a business (days)'),
-        (resources_air, 'Interest rate spread (lending rate minus deposit rate, %)'),
-        (logistics_cc, 'Average time to clear exports through customs (days)') ,
-        (logistics_tte, 'Time to export, border compliance (hours)'),
-        (logistics_tte, 'Time to export, documentary compliance (hours)'),
-        (logistics_tti, 'Time to import, border compliance (hours)'),
-        (logistics_tti, 'Time to import, documentary compliance (hours)')
-    ]
+    sliders_series = au.sliders_series(home_cts, home_tts, resources_air, logistics_cc, logistics_tte, logistics_tti)
 
     selected_countries = au.get_countries_based_on_sliders(bi, countries, sliders_series)
     df = df[df['Country Name'].isin(selected_countries)]
@@ -654,14 +592,7 @@ def plot_tte_sb(countries, years, logistics_cc, logistics_tte, logistics_tti, ho
                 ((bi['Series Name'] == 'Time to import, border compliance (hours)') |
                 (bi['Series Name'] == 'Time to import, documentary compliance (hours)'))]
     
-    sliders_series = [
-        (home_cts, 'Cost of business start-up procedures (% of GNI per capita)'),
-        (home_tts, 'Time required to start a business (days)'),
-        (resources_air, 'Interest rate spread (lending rate minus deposit rate, %)'),
-        (logistics_cc, 'Average time to clear exports through customs (days)') ,
-        (logistics_tte, 'Time to export, border compliance (hours)'),
-        (logistics_tti, 'Time to import, border compliance (hours)'),
-    ]
+    sliders_series = au.sliders_series(home_cts, home_tts, resources_air, logistics_cc, logistics_tte, logistics_tti)
 
     selected_countries = au.get_countries_based_on_sliders(bi, countries, sliders_series)
     df_tte = df_tte[df_tte['Country Name'].isin(selected_countries)]
@@ -672,4 +603,4 @@ def plot_tte_sb(countries, years, logistics_cc, logistics_tte, logistics_tti, ho
     return chart.to_html()
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(debug=False)

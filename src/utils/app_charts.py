@@ -248,19 +248,26 @@ def create_logistics_performance_chart(df, max, min):
              df["year"].isin(years)]["value"].values.tolist(),
         theta=years,
         fill='toself',
-        #fillcolor='Olive',
         name=i,
         connectgaps=True
     ))
     # each circle values
     fig.update_layout(
-    polar=dict(
-        radialaxis=dict(
-        visible=True,
-        range=[min, max],
-        gridcolor='Black',
-        #color='Black'
-        )),
-    showlegend=False
+        polar=dict(
+            radialaxis=dict(
+                visible=True,
+                range=[min, max],
+                gridcolor='Black',
+            )
+        ),
+        showlegend=False,
+        width=450, 
+        height=350, 
+        margin=dict(l=20, r=20, t=20, b=20),
+        paper_bgcolor='darkkhaki'
     )
+
     return fig
+
+
+

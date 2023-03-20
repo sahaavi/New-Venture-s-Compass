@@ -50,3 +50,15 @@ def get_countries_based_on_sliders(df, countries, sliders_series):
     selected_countries = pd.Series(list(set(selected_countries_list[0]).intersection(*selected_countries_list[1:])))
     return selected_countries
 
+def sliders_series(home_cts, home_tts, resources_air, logistics_cc, logistics_tte, logistics_tti):
+    
+    sliders_series = [
+        (home_cts, 'Cost of business start-up procedures (% of GNI per capita)'),
+        (home_tts, 'Time required to start a business (days)'),
+        (resources_air, 'Interest rate spread (lending rate minus deposit rate, %)'),
+        (logistics_cc, 'Average time to clear exports through customs (days)') ,
+        (logistics_tte, 'Time to export, border compliance (hours)'),
+        (logistics_tti, 'Time to import, border compliance (hours)'),
+    ]
+
+    return sliders_series
