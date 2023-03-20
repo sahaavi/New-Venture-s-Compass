@@ -20,7 +20,6 @@ e. TA feedback - added training video, expanded size of map chart, added default
 ### Development and Implementation - The road ahead
 
 e. Restrict inputs systematically to 10 countries (deprioritized due to timelines).
-f. Background color for logistics index chart (known issue).
 
 ### Dashboard Advantages
 a. There is text embedded above each tab which gives the reader a sense of what they are looking for and why its necessary. 
