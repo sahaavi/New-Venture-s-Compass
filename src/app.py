@@ -16,22 +16,35 @@ bi['year'] = bi['year'].astype(str)
 
 selected_countries = None
 
-app = dash.Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
+app = dash.Dash(external_stylesheets=[dbc.themes.FLATLY])
 server = app.server
 
 app.layout = dbc.Container([
     #app header
     dbc.Row([
-    html.H1("New Venture(s) Compass", style={"textAlign": "center"}),
-    html.Hr(),
+    html.H1("New Venture(s) Compass", style={
+                    'backgroundColor': 'Olive',
+                    'padding': 20,
+                    'color': 'white',
+                    'margin-top': 20,
+                    'margin-bottom': 20,
+                    'text-align': 'center',
+                    'font-size': '48px',
+                    'border-radius': 3}),
+    html.Br(),
     ]),
     # filters row
     dbc.Row([
         # side filter column
         dbc.Col([
             html.Br(),
-            html.H4('Filters & Controls'),
-            html.Hr(),
+            html.H4('Filters & Controls',style={
+                    'backgroundColor': 'Gray',"textAlign": "center"}),
+                    html.P('*Note: Some selected countries may not appear in some charts due to insufficient data before applying any filters',style={
+                    'textAlign': 'left',
+                    'fontSize': '10px',
+                    'opacity': '0.5'
+                    }),
             #Home tab sliders
             html.Br(),
             html.H5("Home tab", style={"textAlign": "center"}),
@@ -97,13 +110,12 @@ app.layout = dbc.Container([
             # Time to Export Slider
             html.Div([
                 html.Label(
-                'Time to Export (hours)'
+                'Average Time to Export (hours)'
                 ),
                 dcc.RangeSlider(
                     id='logistics_tte',
                     min=0,
-                    max=200,
-                    value=[2, 30],
+                    max=50,
                     allowCross=False,
                     tooltip={
                         'placement':'bottom',
@@ -114,13 +126,12 @@ app.layout = dbc.Container([
             # Time to Import Slider
             html.Div([
                 html.Label(
-                'Time to Import (hours)'
+                'Average Time to Import (hours)'
                 ),
                 dcc.RangeSlider(
                     id='logistics_tti',
                     min=0,
-                    max=200,
-                    value=[2, 40],
+                    max=50,
                     allowCross=False,
                     tooltip={
                         'placement':'bottom',
@@ -143,23 +154,51 @@ app.layout = dbc.Container([
                     value=30
                 )
             ]),
+            html.Br(),
+            html.Br(),
+            html.H4('About this dashboard',style={
+                    'backgroundColor': 'Gray',"textAlign": "center"}),
+            #Training Link
+            html.Br(),
+            html.H5("User Training", style={"textAlign": "center"}),
+            html.Br(),
+            html.A("Click here to watch our training video",href="https://youtu.be/BkBVHeSRPJE"),
+            html.Br(),
+            #Data source
+            html.Br(),
+            html.H5("Data Source", style={"textAlign": "center"}),
+            html.Br(),
+            html.P("Data Source: Worldbank"),
+            html.Br(),
+            html.P("Last Update: 2019"),
+            html.Br(),
+            html.P("Next update: Expected in April 2024 with new methodology"),
+            html.Br(),
+            html.P("Datasource Links: "),
+            html.A("Worldbank raw data",href="https://databank.worldbank.org/source/world-development-indicators#"), 
+            html.Br(),
+            html.A("Worldbank assessment methodology",href="https://www.worldbank.org/en/programs/business-enabling-environment"),
+            html.Br(),
+            #Data source related info
+            
         ], 
         md=3,
-        style={'border': '1px solid #d3d3d3', 'border-radius': '10px'}
+        style={'border': '1px solid #d3d3d3', 'border-radius': '10px','background-color':'Silver'}
         ),
         # end of side filter column
         # tabs column
         dbc.Col([
             #Header across tabs
-            html.H3("An Interactive Guide to select countries for establishing your new business", style={"textAlign": "center"}),
-            html.Hr(),
+            html.H3("An interactive guide to select countries for establishing your new business", style={"textAlign": "center"}),
+            html.Br(),
             #Overview of the app
             dbc.Row([
+                html.Br(),
                 html.P('Hi there! Congratulations on thinking about starting a new business! \
                 This dashboard is an interactive guide that helps to understand different aspects that are important in starting a business.'),
                 html.P('In default mode, data for 6 countries is shown, with each country randomly chosen from a different continent (excluding Antarctica) using the World Bank database. \
-                We recommend to start browsing through the tabs to get an idea of different aspects. \
-                Once finished, you can choose years and countries for your own assessment, Remember, both inputs are mandatory. \
+                We recommend to start browsing through the three tabs namely Home, Resources, Logistics to get an idea of different aspects. \
+                Once finished, you can choose years and countries for your own assessment using below dropdowns. Remember, both inputs are mandatory. \
                 Sliders are present on the side to further fine tune your selection for each tab. \
                 ')
             ]),
@@ -199,25 +238,26 @@ app.layout = dbc.Container([
             dbc.Row([
                 #html.P('With a help paragraph'),
                 # tabs
-                dbc.Tabs(id='tabs', children=[
+                dbc.Tabs(id='tabs', style={'border': '1px solid white','margin-left': 20},children=[
                     # Home Tab
-                    dbc.Tab(label='Home', children=[
+                    dbc.Tab(label='Home', style={'background-color':'HoneyDew','border': '1px solid #d3d3d3','border-radius': '10px'},
+                            children=[
                         dbc.Row([
                             html.H5("Geographic Location")
                         ]),
                         dbc.Row([
                             dbc.Col([
-                                html.P('Understanding the geographic location of the country is very important. This helps to know the neighboring countries, ports etc.'), 
+                                html.P('Understanding the geographic location of the country is very important. This helps to know the neighboring countries, ports etc.'),
                                 html.Iframe(
                                     id='hm_map',
-                                    style={'border-width': '0', 'width': '100%', 'height': '300px'}
+                                    style={'border-width': '0', 'width': '100%', 'height': '400px'}
                                 )
                             ])   
                         ]),
                         dbc.Row([
                             html.H5("Cost and Time requirements to start a business"),
-                            html.P("Cost and time factors are very important. Cost tells us how costly interms of a countrie's % of income per capita \
-                                    is required to start a business in the country. Time tells us how many days are required in business starting procedures. \
+                            html.P("Cost and time factors are very important. Cost tells us how costly (interms of a countrie's % of income per capita) \
+                                    it is to start a business in the country. Time tells us how many days are required in business starting procedures to open business. \
                                     Lower the percentage and days, favorable it is for anyone to start a business.")
                         ]),
                        dbc.Row([
@@ -231,7 +271,7 @@ app.layout = dbc.Container([
                     ]),
                     # end of home tab
                     # Resources Tab
-                    dbc.Tab(label='Resources', children=[
+                    dbc.Tab(label='Resources', style={'background-color':'HoneyDew','border': '1px solid #d3d3d3','border-radius': '10px'}, children=[
                         dbc.Row([
                             html.H5("Financial Consideration"),
                             html.P("As the next step, we think about knowledge of different resources available or necessary for the business and their supply and demand. \
@@ -246,57 +286,58 @@ app.layout = dbc.Container([
                                 )
                             ])   
                         ]),
+                        html.Br(),
                         dbc.Row([
+                            html.Br(),
                             html.H5("Non-Financial Consideration"),
-                            html.P("Other type of resources available or necessary for the business is labor related. Information regarding them is provided below.")
+                            html.P("Second type of resource available or necessary for the business is labor related. Information regarding human capital is provided below.")
                         ]),
                         dbc.Row([
                             dbc.Col([
                                 html.H6("Unemployment Rates between Labor Force with Basic, Intermediate, and Advanced Education"),
                                 html.Iframe(
                                     id='ur_bar',
-                                    style={'border-width': '0', 'width': '100%', 'height': '350px'}
+                                    style={'border-width': '0', 'width': '100%', 'height': '400px'}
                                 )
                             ]),
                             dbc.Col([
                                 html.H6("National Estimate of Total Labour Force Participation Rate for Ages 15-24"),
                                 html.Iframe(
                                     id='pr_bar',
-                                    style={'border-width': '0', 'width': '100%', 'height': '350px'}
+                                    style={'border-width': '0', 'width': '100%', 'height': '400px'}
                                 )
                             ])
                         ],className="g-0") 
                     ]),
                     # Logistics Tab
-                    dbc.Tab(label='Logistics', children=[
+                    dbc.Tab(label='Logistics', style={'background-color':'HoneyDew','border': '1px solid #d3d3d3','border-radius': '10px'},children=[
                         dbc.Row([
                             html.H5("Imports and Exports"),
-                            html.P("Logistics of how easy and quick it is to import and export and clear customs? Information regarding them is provided below \
-                                    which marks the final items to consider.")
+                            html.P("How easy and quick it is to import and export and clear customs? Information regarding them is provided below. Logistics marks the final items to consider.")
                         ]),
                         # 1st row for bar and radar chart
                         dbc.Row([
                             # multi-bar chart
                             dbc.Col([
-                                html.H5("Average time to clear Exports through customs (days)"),
+                                html.H6("Average time to clear Exports through customs (days)"),
                                 html.Iframe(
                                     id='cc_bar',
-                                    style={'border-width': '0', 'width': '100%', 'height': '500px'}
+                                    style={'border-width': '0', 'width': '100%', 'height': '350px'}
                                 )
                             ]),
                             # radar chart
                             dbc.Col([
-                                html.H5("Logistics Performance Index", style={"text-align": "center"}),
+                                html.H6("Logistics Performance Index"),
                                 dcc.Graph(id="lpi_radar", figure={})
                             ])
                         ]),
                         # end of 1st row for bar and radar chart
                         # 2nd row for horizontal stacked bar
                         dbc.Row([
-                            html.H5("Time to Export/Import (hours)"),
+                            html.H6("Time to Export/Import (hours)"),
                             html.Iframe(
                                     id='tte_sb',
-                                    style={'border-width': '0', 'width': '100%', 'height': '400px'}
+                                    style={'border-width': '0', 'width': '100%', 'height': '350px'}
                                 )
                         ]),
                     ])
@@ -309,7 +350,7 @@ app.layout = dbc.Container([
         # end of tabs column
     ])
     # end of filters row
-])
+],style={'background-color':'HoneyDew','border': '1px solid #d3d3d3'})
 
 # --- HOME CALLBACK ---
 
@@ -328,17 +369,9 @@ app.layout = dbc.Container([
 def plot_map(countries, years, home_cts, home_tts, resources_air, logistics_cc, logistics_tte, logistics_tti):
     
     logistics_cc = [0, logistics_cc]
-    sliders_series = [
-        (home_cts, 'Cost of business start-up procedures (% of GNI per capita)'),
-        (home_tts, 'Time required to start a business (days)'),
-        (resources_air, 'Interest rate spread (lending rate minus deposit rate, %)'),
-        (logistics_cc, 'Average time to clear exports through customs (days)') ,
-        (logistics_tte, 'Time to export, border compliance (hours)'),
-        (logistics_tte, 'Time to export, documentary compliance (hours)'),
-        (logistics_tti, 'Time to import, border compliance (hours)'),
-        (logistics_tti, 'Time to import, documentary compliance (hours)')
-    ]
-
+    
+    sliders_series = au.sliders_series(home_cts, home_tts, resources_air, logistics_cc, logistics_tte, logistics_tti)
+    
     #intersection of countries after all filters applied
     selected_countries = au.get_countries_based_on_sliders(bi, countries, sliders_series)
 
@@ -374,16 +407,7 @@ def plot_line(countries, years, home_cts, home_tts, resources_air, logistics_cc,
     df_tts = bi[(bi['Country Name'].isin(countries)) & (bi['Series Name']== series_name_tts) & (bi['year'].isin(years))]
     df_tts.loc[:, 'year'] = pd.to_datetime(df_tts['year'], format='%Y')
 
-    sliders_series = [
-        (home_cts, 'Cost of business start-up procedures (% of GNI per capita)'),
-        (home_tts, 'Time required to start a business (days)'),
-        (resources_air, 'Interest rate spread (lending rate minus deposit rate, %)'),
-        (logistics_cc, 'Average time to clear exports through customs (days)') ,
-        (logistics_tte, 'Time to export, border compliance (hours)'),
-        (logistics_tte, 'Time to export, documentary compliance (hours)'),
-        (logistics_tti, 'Time to import, border compliance (hours)'),
-        (logistics_tti, 'Time to import, documentary compliance (hours)')
-    ]
+    sliders_series = au.sliders_series(home_cts, home_tts, resources_air, logistics_cc, logistics_tte, logistics_tti)
 
     selected_countries = au.get_countries_based_on_sliders(bi, countries, sliders_series)
 
@@ -418,16 +442,7 @@ def plot_int_line(countries, years, home_cts, home_tts, resources_air, logistics
     df = bi[(bi['Country Name'].isin(countries)) & (bi['Series Name']==series_name) & (bi['year'].isin(years))] 
     df.loc[:, 'year'] = pd.to_datetime(df['year'], format='%Y')
     
-    sliders_series = [
-        (home_cts, 'Cost of business start-up procedures (% of GNI per capita)'),
-        (home_tts, 'Time required to start a business (days)'),
-        (resources_air, 'Interest rate spread (lending rate minus deposit rate, %)'),
-        (logistics_cc, 'Average time to clear exports through customs (days)') ,
-        (logistics_tte, 'Time to export, border compliance (hours)'),
-        (logistics_tte, 'Time to export, documentary compliance (hours)'),
-        (logistics_tti, 'Time to import, border compliance (hours)'),
-        (logistics_tti, 'Time to import, documentary compliance (hours)')
-    ]
+    sliders_series = au.sliders_series(home_cts, home_tts, resources_air, logistics_cc, logistics_tte, logistics_tti)
 
     selected_countries = au.get_countries_based_on_sliders(bi, countries, sliders_series)
     df = df[df['Country Name'].isin(selected_countries)]
@@ -458,16 +473,7 @@ def plot_ur_bar(countries, years, home_cts, home_tts, resources_air, logistics_c
     bi['education_level'] = bi['Series Name'].str.extract('Unemployment with (\w+) education')
     df = bi[(bi['Country Name'].isin(countries)) & (bi['Series Name'].isin(series)) & (bi['year'].isin(years))]
 
-    sliders_series = [
-        (home_cts, 'Cost of business start-up procedures (% of GNI per capita)'),
-        (home_tts, 'Time required to start a business (days)'),
-        (resources_air, 'Interest rate spread (lending rate minus deposit rate, %)'),
-        (logistics_cc, 'Average time to clear exports through customs (days)') ,
-        (logistics_tte, 'Time to export, border compliance (hours)'),
-        (logistics_tte, 'Time to export, documentary compliance (hours)'),
-        (logistics_tti, 'Time to import, border compliance (hours)'),
-        (logistics_tti, 'Time to import, documentary compliance (hours)')
-    ]
+    sliders_series = au.sliders_series(home_cts, home_tts, resources_air, logistics_cc, logistics_tte, logistics_tti)
 
     selected_countries = au.get_countries_based_on_sliders(bi, countries, sliders_series)
     df = df[df['Country Name'].isin(selected_countries)]
@@ -495,16 +501,7 @@ def plot_pr_bar(countries, years, home_cts, home_tts, resources_air, logistics_c
     df = bi[(bi['Country Name'].isin(countries)) & (bi['Series Name'] == series_name) & (bi['year'].isin(years))]
     df.loc[:, 'year'] = pd.to_datetime(df['year'], format='%Y')
     
-    sliders_series = [
-        (home_cts, 'Cost of business start-up procedures (% of GNI per capita)'),
-        (home_tts, 'Time required to start a business (days)'),
-        (resources_air, 'Interest rate spread (lending rate minus deposit rate, %)'),
-        (logistics_cc, 'Average time to clear exports through customs (days)') ,
-        (logistics_tte, 'Time to export, border compliance (hours)'),
-        (logistics_tte, 'Time to export, documentary compliance (hours)'),
-        (logistics_tti, 'Time to import, border compliance (hours)'),
-        (logistics_tti, 'Time to import, documentary compliance (hours)')
-    ]
+    sliders_series = au.sliders_series(home_cts, home_tts, resources_air, logistics_cc, logistics_tte, logistics_tti)
 
     selected_countries = au.get_countries_based_on_sliders(bi, countries, sliders_series)
     df = df[df['Country Name'].isin(selected_countries)]
@@ -534,16 +531,7 @@ def plot_cc_bar(countries, years, logistics_cc, logistics_tte, logistics_tti, ho
             (bi['year'].isin(years)) & 
             (bi['Series Name']=="Average time to clear exports through customs (days)")]
     
-    sliders_series = [
-        (home_cts, 'Cost of business start-up procedures (% of GNI per capita)'),
-        (home_tts, 'Time required to start a business (days)'),
-        (resources_air, 'Interest rate spread (lending rate minus deposit rate, %)'),
-        (logistics_cc, 'Average time to clear exports through customs (days)') ,
-        (logistics_tte, 'Time to export, border compliance (hours)'),
-        (logistics_tte, 'Time to export, documentary compliance (hours)'),
-        (logistics_tti, 'Time to import, border compliance (hours)'),
-        (logistics_tti, 'Time to import, documentary compliance (hours)')
-    ]
+    sliders_series = au.sliders_series(home_cts, home_tts, resources_air, logistics_cc, logistics_tte, logistics_tti)
 
     selected_countries = au.get_countries_based_on_sliders(bi, countries, sliders_series)
     df = df[df['Country Name'].isin(selected_countries)]
@@ -574,16 +562,7 @@ def plot_lpi_radar(countries, years, logistics_cc, logistics_tte, logistics_tti,
             (bi['year'].isin(years)) & 
             (bi['Series Name']=="Logistics performance index: Overall (1=low to 5=high)")]
 
-    sliders_series = [
-        (home_cts, 'Cost of business start-up procedures (% of GNI per capita)'),
-        (home_tts, 'Time required to start a business (days)'),
-        (resources_air, 'Interest rate spread (lending rate minus deposit rate, %)'),
-        (logistics_cc, 'Average time to clear exports through customs (days)') ,
-        (logistics_tte, 'Time to export, border compliance (hours)'),
-        (logistics_tte, 'Time to export, documentary compliance (hours)'),
-        (logistics_tti, 'Time to import, border compliance (hours)'),
-        (logistics_tti, 'Time to import, documentary compliance (hours)')
-    ]
+    sliders_series = au.sliders_series(home_cts, home_tts, resources_air, logistics_cc, logistics_tte, logistics_tti)
 
     selected_countries = au.get_countries_based_on_sliders(bi, countries, sliders_series)
     df = df[df['Country Name'].isin(selected_countries)]
@@ -618,16 +597,7 @@ def plot_tte_sb(countries, years, logistics_cc, logistics_tte, logistics_tti, ho
                 ((bi['Series Name'] == 'Time to import, border compliance (hours)') |
                 (bi['Series Name'] == 'Time to import, documentary compliance (hours)'))]
     
-    sliders_series = [
-        (home_cts, 'Cost of business start-up procedures (% of GNI per capita)'),
-        (home_tts, 'Time required to start a business (days)'),
-        (resources_air, 'Interest rate spread (lending rate minus deposit rate, %)'),
-        (logistics_cc, 'Average time to clear exports through customs (days)') ,
-        (logistics_tte, 'Time to export, border compliance (hours)'),
-        (logistics_tte, 'Time to export, documentary compliance (hours)'),
-        (logistics_tti, 'Time to import, border compliance (hours)'),
-        (logistics_tti, 'Time to import, documentary compliance (hours)')
-    ]
+    sliders_series = au.sliders_series(home_cts, home_tts, resources_air, logistics_cc, logistics_tte, logistics_tti)
 
     selected_countries = au.get_countries_based_on_sliders(bi, countries, sliders_series)
     df_tte = df_tte[df_tte['Country Name'].isin(selected_countries)]
